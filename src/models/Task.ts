@@ -11,5 +11,5 @@ export interface Task {
 
 export interface TaskRelation {
     relatedTaskId: number;
-    relationType: string;
+    relationType: 'blocked' | 'parent' | 'child' | 'related';
 }

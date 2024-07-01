@@ -1,5 +1,12 @@
 import pool from '../db';
 
+export class UserNotFoundError extends Error {
+    constructor(message?: string) {
+        super(message);
+        this.name = 'UserNotFoundError';
+    }
+}
+
 export class UserRepository {
     async userExists(userId: number): Promise<boolean> {
         const connection = await pool.getConnection();

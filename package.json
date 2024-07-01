@@ -4,15 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "tsc && node src/server.js",
+    "dev": "ts-node src/server.ts",
     "generate-types": "openapi-typescript ./api.yaml --output ./src/types/api-types.ts",
     "mysql": "docker run --name mysql -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql   -p 3306:3306 mysql:5",
-    "test": "jest"
+    "test": "jest",
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-openapi": "^12.1.3",
     "js-yaml": "^4.1.0",

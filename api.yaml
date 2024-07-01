@@ -10,17 +10,19 @@ servers:
 paths:
   /tasks:
     get:
+      operationId: getTasks
       summary: List all tasks
       responses:
         '200':
           description: Successful response
           content:
-            application/json:    
+            application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Task'
     post:
+      operationId: createTask
       summary: Create a new task
       requestBody:
         required: true
@@ -38,6 +40,7 @@ paths:
 
   /tasks/{taskId}:
     get:
+      operationId: getTaskById
       summary: Get a specific task
       parameters:
         - name: taskId
@@ -54,8 +57,9 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           description: Task not found
-    
+
     put:
+      operationId: updateTaskById
       summary: Update a specific task
       parameters:
         - name: taskId
@@ -78,8 +82,9 @@ paths:
                 $ref: '#/components/schemas/Task'
         '404':
           description: Task not found
-    
+
     delete:
+      operationId: deleteTaskById
       summary: Delete a specific task
       parameters:
         - name: taskId
@@ -95,6 +100,7 @@ paths:
 
   /tasks/{taskId}/comments:
     get:
+      operationId: getCommentsByTaskId
       summary: Get comments for a specific task
       parameters:
         - name: taskId
@@ -111,8 +117,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Comment'
-    
+
     post:
+      operationId: addCommentToTask
       summary: Add a comment to a task
       parameters:
         - name: taskId
@@ -198,6 +205,9 @@ components:
 
     TaskRelation:
       type: object
+      required:
+        - relatedTaskId
+        - relationType
       properties:
         relatedTaskId:
           type: integer
