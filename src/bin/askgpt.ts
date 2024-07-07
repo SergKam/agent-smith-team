@@ -65,7 +65,7 @@ const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessa
             top_p: 1,
             messages
         })
-
+        console.log(completion)
         return completion;
     } catch (error: any) {
         throw new Error(`Error calling ChatGPT API: ${error.message}`);
@@ -84,8 +84,6 @@ const exists = async (path: string) => {
 const processAnswer = (result: any) => {
     const response = JSON.parse(result.choices[0].message.content)
     const finish = result.choices[0].finish_reason;
-    console.log('ChatGPT API response:', finish);
-    console.dir(response)
     if (!response.files) {
         throw new Error('No files found in response');
     }
@@ -123,16 +121,14 @@ const main = async () => {
     Pay attention to the naming of variables and functions.
     Think on implementation step by step. Use best practices.
     Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
-    Follow the code style and structure of the existing code. 
+    Follow the code style and structure of the existing code. Include changes in all files that are needed to implement working solution and include tests for all code path
     Pack results as a json with key "files" containing array of object where each object contains fields:
     - "name" is the file path with name and extension.
     - "content" is the content of the file.
-    - "operation" is what change need to be done on that file, one of "create", "update", "delete".
+    - "operation" is what change need to be done on that file, one of "create", "update", "delete".    
     `
 
-    const task = `
-    Change the project to implement GET /tasks endpoint and that returns all tasks according to api.yaml. Include changes in all files that are needed to implement working solution and include tests.
-    `;
+    const task = process.argv[2];
 
     try {
         const rootDir = path.resolve(__dirname, '..', '..');
