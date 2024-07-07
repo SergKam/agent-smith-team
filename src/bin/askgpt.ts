@@ -2,7 +2,23 @@ import fs from 'fs/promises';
 import path from 'path';
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import {exec} from 'child_process';
+import {promisify} from 'util';
+
 dotenv.config();
+
+const execAsync = promisify(exec);
+
+const runTests = async () => {
+    try {
+        const { stdout, stderr} = await execAsync('npm test');
+        console.log(stdout)
+        return {testPass: true, errors: stderr};
+    } catch (error: any) {
+        return {testPass: false, errors: error.message};
+    }
+};
+
 
 const concatenateFiles = async (rootDir: string): Promise<string> => {
     let concatenatedContent = '';
@@ -11,7 +27,7 @@ const concatenateFiles = async (rootDir: string): Promise<string> => {
     const excludeFiles = ['package-lock.json', 'concatenated.ts'];
 
     const processDirectory = async (dir: string) => {
-        const entries = await fs.readdir(dir, { withFileTypes: true });
+        const entries = await fs.readdir(dir, {withFileTypes: true});
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name);
             const relativePath = path.relative(rootDir, fullPath);
@@ -23,7 +39,7 @@ const concatenateFiles = async (rootDir: string): Promise<string> => {
             } else if (entry.isFile()) {
                 if (!excludeFiles.includes(entry.name) && /\.(ts|yaml|json)$/.test(entry.name)) {
                     const fileContent = await fs.readFile(fullPath, 'utf8');
-                    concatenatedContent += `// ${relativePath}\n${fileContent}\n`;
+                    concatenatedContent += `// File: ${relativePath}\n${fileContent}\n`;
                 }
             }
         }
@@ -34,9 +50,8 @@ const concatenateFiles = async (rootDir: string): Promise<string> => {
 };
 
 
-
 // Function to call ChatGPT API
-const callChatGPT = async (content: string, customPrompt: string): Promise<any> => {
+const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]): Promise<any> => {
     const openai = new OpenAI({
         apiKey: process.env.OPENAI_KEY
     });
@@ -44,13 +59,11 @@ const callChatGPT = async (content: string, customPrompt: string): Promise<any> 
     try {
         const completion = await openai.chat.completions.create({
             model: 'gpt-4o',
-            response_format: { type: "json_object" },
+            response_format: {type: "json_object"},
             seed: 927364,
-            temperature:0.1,
-            messages: [
-                { role: 'system', content: customPrompt },
-                { role: 'user', content }
-            ]
+            temperature: 0.1,
+            top_p: 1,
+            messages
         })
 
         return completion;
@@ -63,17 +76,17 @@ const exists = async (path: string) => {
     try {
         await fs.access(path);
         return true;
-    } catch (error){
+    } catch (error) {
         return false;
     }
 }
 
 const processAnswer = (result: any) => {
-    const response= JSON.parse( result.choices[0].message.content)
-    const finish =  result.choices[0].finish_reason;
+    const response = JSON.parse(result.choices[0].message.content)
+    const finish = result.choices[0].finish_reason;
     console.log('ChatGPT API response:', finish);
     console.dir(response)
-    if(!response.files){
+    if (!response.files) {
         throw new Error('No files found in response');
     }
     response.files.forEach(async (file: any) => {
@@ -85,7 +98,7 @@ const processAnswer = (result: any) => {
                 return await fs.writeFile(file.name, file.content);
 
             case 'update':
-                if(! await exists(file.name)){
+                if (!await exists(file.name)) {
                     throw new Error(`File "${file.name}" does not exist`);
                 }
                 return await fs.writeFile(file.name, file.content);
@@ -102,8 +115,7 @@ const processAnswer = (result: any) => {
 };
 
 const main = async () => {
-
-    const customPrompt = `
+    const setupPrompt = `
     Do not explain anything to me, just give me the TypeScript code. 
     The code should be logically split into files following clean architecture.
     the code should be properly formatted and should be able to run without any errors.
@@ -116,16 +128,45 @@ const main = async () => {
     - "name" is the file path with name and extension.
     - "content" is the content of the file.
     - "operation" is what change need to be done on that file, one of "create", "update", "delete".
-    
-    
+    `
+
+    const task = `
     Change the project to implement GET /tasks endpoint and that returns all tasks according to api.yaml. Include changes in all files that are needed to implement working solution and include tests.
     `;
 
     try {
-        const rootDir = path.resolve(__dirname, '..');
+        const rootDir = path.resolve(__dirname, '..', '..');
         const fileContent = await concatenateFiles(rootDir)
-        const chatGPTResponse = await callChatGPT(fileContent, customPrompt);
-        processAnswer(chatGPTResponse);
+        const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
+            {role: 'system', content: setupPrompt, name:"setup"},
+            {role: 'system', content: fileContent, name:"content"},
+            {role: 'user', content: task, name: "user"}
+        ]
+        let testPass = false
+        let retryCount = 5
+        do {
+            const chatGPTResponse = await callChatGPT(messages);
+            processAnswer(chatGPTResponse);
+            const testResults =  await runTests();
+            testPass = testResults.testPass;
+            retryCount--;
+            console.log(testResults.errors)
+            console.log("retryCount", retryCount)
+            if(testResults.errors) {
+                messages.push({
+                    role: "assistant",
+                    name: "assistant",
+                    content: chatGPTResponse.choices[0].message.content
+                })
+                messages.push({
+                    role: "user",
+                    name: "user",
+                    content: `There is an error while i was running "npm test". 
+                    Fix it providing new version of files. Use JSON format as in initial prompt. Errors: ${testResults.errors}`
+                })
+            }
+        } while (!testPass && retryCount);
+
     } catch (error: any) {
         console.error('Error:', error.message);
     }
