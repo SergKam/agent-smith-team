@@ -1,0 +1,134 @@
+import fs from 'fs/promises';
+import path from 'path';
+import dotenv from "dotenv";
+import OpenAI from "openai";
+dotenv.config();
+
+const concatenateFiles = async (rootDir: string): Promise<string> => {
+    let concatenatedContent = '';
+
+    const excludeDirs = ['node_modules', 'data', "bin"];
+    const excludeFiles = ['package-lock.json', 'concatenated.ts'];
+
+    const processDirectory = async (dir: string) => {
+        const entries = await fs.readdir(dir, { withFileTypes: true });
+        for (const entry of entries) {
+            const fullPath = path.join(dir, entry.name);
+            const relativePath = path.relative(rootDir, fullPath);
+
+            if (entry.isDirectory()) {
+                if (!excludeDirs.includes(entry.name)) {
+                    await processDirectory(fullPath);
+                }
+            } else if (entry.isFile()) {
+                if (!excludeFiles.includes(entry.name) && /\.(ts|yaml|json)$/.test(entry.name)) {
+                    const fileContent = await fs.readFile(fullPath, 'utf8');
+                    concatenatedContent += `// ${relativePath}\n${fileContent}\n`;
+                }
+            }
+        }
+    };
+
+    await processDirectory(rootDir);
+    return concatenatedContent;
+};
+
+
+
+// Function to call ChatGPT API
+const callChatGPT = async (content: string, customPrompt: string): Promise<any> => {
+    const openai = new OpenAI({
+        apiKey: process.env.OPENAI_KEY
+    });
+
+    try {
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-4o',
+            response_format: { type: "json_object" },
+            seed: 927364,
+            temperature:0.1,
+            messages: [
+                { role: 'system', content: customPrompt },
+                { role: 'user', content }
+            ]
+        })
+
+        return completion;
+    } catch (error: any) {
+        throw new Error(`Error calling ChatGPT API: ${error.message}`);
+    }
+};
+
+const exists = async (path: string) => {
+    try {
+        await fs.access(path);
+        return true;
+    } catch (error){
+        return false;
+    }
+}
+
+const processAnswer = (result: any) => {
+    const response= JSON.parse( result.choices[0].message.content)
+    const finish =  result.choices[0].finish_reason;
+    console.log('ChatGPT API response:', finish);
+    console.dir(response)
+    if(!response.files){
+        throw new Error('No files found in response');
+    }
+    response.files.forEach(async (file: any) => {
+        switch (file.operation) {
+            case 'create':
+                if (await exists(file.name)) {
+                    throw new Error(`File "${file.name}" already exists`);
+                }
+                return await fs.writeFile(file.name, file.content);
+
+            case 'update':
+                if(! await exists(file.name)){
+                    throw new Error(`File "${file.name}" does not exist`);
+                }
+                return await fs.writeFile(file.name, file.content);
+
+            case 'delete':
+                if (!await exists(file.name)) {
+                    throw new Error(`File "${file.name}" does not exist`);
+                }
+                return await fs.unlink(file.name);
+            default:
+                throw new Error(`Invalid operation "${file.operation}" for file "${file.name}"`);
+        }
+    });
+};
+
+const main = async () => {
+
+    const customPrompt = `
+    Do not explain anything to me, just give me the TypeScript code. 
+    The code should be logically split into files following clean architecture.
+    the code should be properly formatted and should be able to run without any errors.
+    Write the code in a way that it is easy to understand.
+    Pay attention to the naming of variables and functions.
+    Think on implementation step by step. Use best practices.
+    Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
+    Follow the code style and structure of the existing code. 
+    Pack results as a json with key "files" containing array of object where each object contains fields:
+    - "name" is the file path with name and extension.
+    - "content" is the content of the file.
+    - "operation" is what change need to be done on that file, one of "create", "update", "delete".
+    
+    
+    Change the project to implement GET /tasks endpoint and that returns all tasks according to api.yaml. Include changes in all files that are needed to implement working solution and include tests.
+    `;
+
+    try {
+        const rootDir = path.resolve(__dirname, '..');
+        const fileContent = await concatenateFiles(rootDir)
+        const chatGPTResponse = await callChatGPT(fileContent, customPrompt);
+        processAnswer(chatGPTResponse);
+    } catch (error: any) {
+        console.error('Error:', error.message);
+    }
+};
+
+main();
