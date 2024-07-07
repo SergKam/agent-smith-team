@@ -85,3 +85,41 @@ describe('POST /tasks', () => {
     expect(response.body).toHaveProperty('error', 'Assigned user not found');
   });
 });
+
+
+describe.skip('GET /tasks', () => {
+  beforeEach(async () => {
+    // Clear the tasks table and insert some test data
+    await pool.query('DELETE FROM task_relations');
+    await pool.query('DELETE FROM tasks');
+    await pool.query(`
+      INSERT INTO tasks (title, description, status, type, priority)
+      VALUES 
+        ('Task 1', 'Description 1', 'pending', 'task', 'medium'),
+        ('Task 2', 'Description 2', 'in_progress', 'story', 'high')
+    `);
+  });
+
+  it('should return all tasks', async () => {
+    const response = await request(app)
+      .get('/v1/tasks')
+      .expect(200);
+
+    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body.length).toBe(2);
+    expect(response.body[0]).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('title', 'Task 1');
+    expect(response.body[1]).toHaveProperty('title', 'Task 2');
+  });
+
+  it('should return an empty array when no tasks exist', async () => {
+    await pool.query('DELETE FROM tasks');
+
+    const response = await request(app)
+      .get('/v1/tasks')
+      .expect(200);
+
+    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body.length).toBe(0);
+  });
+});

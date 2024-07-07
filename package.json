@@ -7,7 +7,7 @@
     "start": "tsc && node src/server.js",
     "dev": "ts-node src/server.ts",
     "generate-types": "openapi-typescript ./api.yaml --output ./src/types/api-types.ts",
-    "mysql": "docker run --name mysql -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql   -p 3306:3306 mysql:5",
+    "mysql": "docker run --rm -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql  -p 3306:3306 mysql:5",
     "test": "jest",
     "tsc": "tsc"
   },

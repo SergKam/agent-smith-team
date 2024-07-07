@@ -5,6 +5,7 @@ import {UserNotFoundError} from "../repositories/UserRepository";
 
 type PostTaskRequest = paths['/tasks']['post']['requestBody']['content']['application/json'];
 type PostTaskResponse = paths['/tasks']['post']['responses']['201']['content']['application/json'];
+type GetTasksResponse = paths['/tasks']['get']['responses']['200']['content']['application/json'];
 
 export default function() {
     return {
@@ -14,16 +15,14 @@ export default function() {
 
             try {
                 const createdTask = await taskService.createTask(body);
-                const response: PostTaskResponse = createdTask;
+                const response: PostTaskResponse = createdTask as PostTaskResponse;
                 res.status(201).json(response);
-            } catch (error) {
-                switch (true) {
-                    case error instanceof UserNotFoundError:
-                        res.status(400).json({ error: 'Assigned user not found' });
-                        return;
-                    default:
-                        console.error('Error creating task:', error);
-                        res.status(500).send('Internal Server Error');
+            } catch (error: any) {
+                console.error('Error creating task:', error);
+                if (error.message === 'Assigned user not found') {
+                    res.status(400).json({ error: error.message });
+                } else {
+                    res.status(500).send('Internal Server Error');
                 }
             }
         },
