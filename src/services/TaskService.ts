@@ -48,4 +48,14 @@ export class TaskService {
 
         return updatedTask;
     }
+
+    async deleteTaskById(taskId: number): Promise<boolean> {
+        const existingTask = await this.taskRepository.getTaskById(taskId);
+        if (!existingTask) {
+            return false;
+        }
+
+        await this.taskRepository.deleteTaskById(taskId);
+        return true;
+    }
 }

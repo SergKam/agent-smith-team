@@ -41,7 +41,20 @@ export default function() {
             }
         },
         delete: async (req: Request, res: Response) => {
-            res.send('Response from DELETE /tasks');
+            const taskId = parseInt(req.params.taskId, 10);
+            const taskService = new TaskService();
+
+            try {
+                const deleted = await taskService.deleteTaskById(taskId);
+                if (deleted) {
+                    res.status(204).send();
+                } else {
+                    res.status(404).send('Task not found');
+                }
+            } catch (error) {
+                console.error('Error deleting task:', error);
+                res.status(500).send('Internal Server Error');
+            }
         }
     };
 }

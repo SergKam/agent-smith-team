@@ -66,4 +66,16 @@ export class TaskRepository {
             connection.release();
         }
     }
+
+    async deleteTaskById(taskId: number): Promise<void> {
+        const connection = await pool.getConnection();
+        try {
+            await connection.execute(
+                'DELETE FROM tasks WHERE id = ?',
+                [taskId]
+            );
+        } finally {
+            connection.release();
+        }
+    }
 }

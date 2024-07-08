@@ -224,3 +224,39 @@ describe('PUT /tasks/:taskId', () => {
     expect(response.body).toHaveProperty('error', 'Assigned user not found');
   });
 });
+
+describe('DELETE /tasks/:taskId', () => {
+  let taskId: number;
+
+  beforeEach(async () => {
+    const [result] = await pool.query(`
+      INSERT INTO tasks (title, description, status, type, priority)
+      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+    `);
+    taskId = (result as any).insertId;
+  });
+
+  afterEach(async () => {
+    await pool.query('DELETE FROM tasks');
+  });
+
+  it('should delete the task if it exists', async () => {
+    await request(app)
+      .delete(`/v1/tasks/${taskId}`)
+      .expect(204);
+
+    const response = await request(app)
+      .get(`/v1/tasks/${taskId}`)
+      .expect(404);
+
+    expect(response.text).toBe('Task not found');
+  });
+
+  it('should return 404 if the task does not exist', async () => {
+    const response = await request(app)
+      .delete('/v1/tasks/9999')
+      .expect(404);
+
+    expect(response.text).toBe('Task not found');
+  });
+});
