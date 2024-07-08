@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../../services/TaskService';
+import { UserNotFoundError } from '../../repositories/UserRepository';
 
 export default function() {
     return {
@@ -33,7 +34,7 @@ export default function() {
                 }
             } catch (error: any) {
                 console.error('Error updating task:', error);
-                if (error.message === 'Assigned user not found') {
+                if (error instanceof UserNotFoundError) {
                     res.status(400).json({ error: error.message });
                 } else {
                     res.status(500).send('Internal Server Error');

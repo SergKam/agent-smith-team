@@ -1,14 +1,14 @@
 import { Task, TaskRelation } from '../models/Task';
 import { TaskRepository } from '../repositories/TaskRepository';
-import { UserRepository } from '../repositories/UserRepository';
+import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
 
 export class TaskService {
     private taskRepository = new TaskRepository();
     private userRepository = new UserRepository();
 
     async createTask(task: Task): Promise<Task> {
-        if (task.assignedTo && !(await this.userRepository.userExists(task.assignedTo))) {
-            throw new Error('Assigned user not found');
+        if (task.assignedTo) {
+            await this.userRepository.validateUserExists(task.assignedTo);
         }
 
         // Ensure all relations have defined relatedTaskId and relationType
@@ -39,8 +39,8 @@ export class TaskService {
             return null;
         }
 
-        if (taskData.assignedTo && !(await this.userRepository.userExists(taskData.assignedTo))) {
-            throw new Error('Assigned user not found');
+        if (taskData.assignedTo) {
+            await this.userRepository.validateUserExists(taskData.assignedTo);
         }
 
         const updatedTask = { ...existingTask, ...taskData };

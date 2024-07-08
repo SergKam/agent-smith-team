@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { paths } from '../types/api-types';
 import { TaskService } from '../services/TaskService';
-import {UserNotFoundError} from "../repositories/UserRepository";
+import { UserNotFoundError } from '../repositories/UserRepository';
+
+
 
 type PostTaskRequest = paths['/tasks']['post']['requestBody']['content']['application/json'];
 type PostTaskResponse = paths['/tasks']['post']['responses']['201']['content']['application/json'];
@@ -19,7 +21,7 @@ export default function() {
                 res.status(201).json(response);
             } catch (error: any) {
                 console.error('Error creating task:', error);
-                if (error.message === 'Assigned user not found') {
+                if (error instanceof UserNotFoundError) {
                     res.status(400).json({ error: error.message });
                 } else {
                     res.status(500).send('Internal Server Error');

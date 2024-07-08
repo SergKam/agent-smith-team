@@ -20,4 +20,11 @@ export class UserRepository {
             connection.release();
         }
     }
+
+    async validateUserExists(userId: number): Promise<void> {
+        const exists = await this.userExists(userId);
+        if (!exists) {
+            throw new UserNotFoundError('Assigned user not found');
+        }
+    }
 }
