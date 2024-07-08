@@ -24,4 +24,8 @@ export class TaskService {
 
         return { ...task, id: taskId, relations: validRelations };
     }
+
+    async getTaskById(taskId: number): Promise<Task | null> {
+        return this.taskRepository.getTaskById(taskId);
+    }
 }

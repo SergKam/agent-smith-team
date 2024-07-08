@@ -29,4 +29,18 @@ export class TaskRepository {
             connection.release();
         }
     }
+
+    async getTaskById(taskId: number): Promise<Task | null> {
+        const connection = await pool.getConnection();
+        try {
+            const [rows] = await connection.execute(
+                'SELECT * FROM tasks WHERE id = ?',
+                [taskId]
+            );
+            const tasks = rows as Task[];
+            return tasks.length > 0 ? tasks[0] : null;
+        } finally {
+            connection.release();
+        }
+    }
 }
