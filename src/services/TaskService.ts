@@ -28,4 +28,8 @@ export class TaskService {
     async getTaskById(taskId: number): Promise<Task | null> {
         return this.taskRepository.getTaskById(taskId);
     }
+
+    async getAllTasks(): Promise<Task[]> {
+        return this.taskRepository.getAllTasks();
+    }
 }

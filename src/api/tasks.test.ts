@@ -119,7 +119,7 @@ describe('GET /tasks/:taskId', () => {
   });
 });
 
-describe.skip('GET /tasks', () => {
+describe('GET /tasks', () => {
   beforeEach(async () => {
     // Clear the tasks table and insert some test data
     await pool.query('DELETE FROM task_relations');

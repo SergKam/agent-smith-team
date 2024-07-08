@@ -43,4 +43,14 @@ export class TaskRepository {
             connection.release();
         }
     }
+
+    async getAllTasks(): Promise<Task[]> {
+        const connection = await pool.getConnection();
+        try {
+            const [rows] = await connection.execute('SELECT * FROM tasks');
+            return rows as Task[];
+        } finally {
+            connection.release();
+        }
+    }
 }

@@ -27,22 +27,16 @@ export default function() {
             }
         },
         get: async (req: Request, res: Response) => {
-            res.send('Response from GET /tasks');
-            // const taskId = req.params.taskId;
-            // const taskService = new TaskService();
-            //
-            // try {
-            //     const task = await taskService.getTask(taskId);
-            //     if (task) {
-            //         res.json(task);
-            //     } else {
-            //         res.status(404).send('Task not found');
-            //     }
-            // } catch (error) {
-            //     console.error('Error getting task:', error);
-            //     res.status(500).send('Internal Server Error');
-            // }
-        },
+            const taskService = new TaskService();
 
+            try {
+                const tasks = await taskService.getAllTasks();
+                const response: GetTasksResponse = tasks as GetTasksResponse;
+                res.status(200).json(response);
+            } catch (error) {
+                console.error('Error getting tasks:', error);
+                res.status(500).send('Internal Server Error');
+            }
+        }
     };
 }
