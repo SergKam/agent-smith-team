@@ -65,7 +65,7 @@ const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessa
             top_p: 1,
             messages
         })
-        console.log(completion)
+        console.log(completion.choices[0])
         return completion;
     } catch (error: any) {
         throw new Error(`Error calling ChatGPT API: ${error.message}`);
