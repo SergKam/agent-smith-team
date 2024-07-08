@@ -32,4 +32,20 @@ export class TaskService {
     async getAllTasks(): Promise<Task[]> {
         return this.taskRepository.getAllTasks();
     }
+
+    async updateTaskById(taskId: number, taskData: Partial<Task>): Promise<Task | null> {
+        const existingTask = await this.taskRepository.getTaskById(taskId);
+        if (!existingTask) {
+            return null;
+        }
+
+        if (taskData.assignedTo && !(await this.userRepository.userExists(taskData.assignedTo))) {
+            throw new Error('Assigned user not found');
+        }
+
+        const updatedTask = { ...existingTask, ...taskData };
+        await this.taskRepository.updateTaskById(taskId, updatedTask);
+
+        return updatedTask;
+    }
 }

@@ -20,7 +20,25 @@ export default function() {
             }
         },
         put: async (req: Request, res: Response) => {
-            res.send('Response from PUT /tasks');
+            const taskId = parseInt(req.params.taskId, 10);
+            const taskService = new TaskService();
+            const taskData = req.body;
+
+            try {
+                const updatedTask = await taskService.updateTaskById(taskId, taskData);
+                if (updatedTask) {
+                    res.status(200).json(updatedTask);
+                } else {
+                    res.status(404).send('Task not found');
+                }
+            } catch (error: any) {
+                console.error('Error updating task:', error);
+                if (error.message === 'Assigned user not found') {
+                    res.status(400).json({ error: error.message });
+                } else {
+                    res.status(500).send('Internal Server Error');
+                }
+            }
         },
         delete: async (req: Request, res: Response) => {
             res.send('Response from DELETE /tasks');

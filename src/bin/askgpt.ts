@@ -121,7 +121,9 @@ const main = async () => {
     Pay attention to the naming of variables and functions.
     Think on implementation step by step. Use best practices.
     Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
-    Follow the code style and structure of the existing code. Include changes in all files that are needed to implement working solution and include tests for all code path
+    Follow the code style and structure of the existing code. Use proper types instead of any is possible.
+    Prefer enums to strings and booleans. 
+    Include changes in all files that are needed to implement working solution and include tests for all code path
     Pack results as a json with key "files" containing array of object where each object contains fields:
     - "name" is the file path with name and extension.
     - "content" is the content of the file.

@@ -53,4 +53,17 @@ export class TaskRepository {
             connection.release();
         }
     }
+
+    async updateTaskById(taskId: number, taskData: Partial<Task>): Promise<void> {
+        const connection = await pool.getConnection();
+        try {
+            const { title, description, status, type, priority, assignedTo } = taskData;
+            await connection.execute(
+                `UPDATE tasks SET title = ?, description = ?, status = ?, type = ?, priority = ?, assignedTo = ? WHERE id = ?`,
+                [title, description || null, status, type, priority, assignedTo || null, taskId]
+            );
+        } finally {
+            connection.release();
+        }
+    }
 }
