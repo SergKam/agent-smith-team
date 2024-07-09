@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node src/server.js",
-    "dev": "ts-node src/server.ts",
-    "generate-types": "openapi-typescript ./api.yaml --output ./src/types/api-types.ts",
+    "dev": "ts-node src/apps/task_manager/server.ts",
+    "generate-types": "openapi-typescript src/shared/api.yaml --output src/apps/task_manager/types/api-types.ts",
     "mysql": "docker run --rm -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql  -p 3306:3306 mysql:5",
-    "ask": "ts-node src/bin/askgpt.ts",
+    "ask": "ts-node src/apps/agent_developer/askgpt.ts",
     "test": "jest",
     "tsc": "tsc"
   },

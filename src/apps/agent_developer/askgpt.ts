@@ -20,32 +20,31 @@ const runTests = async () => {
 };
 
 
-const concatenateFiles = async (rootDir: string): Promise<string> => {
+const concatenateFiles = async (rootDir: string, app: string): Promise<string> => {
     let concatenatedContent = '';
 
-    const excludeDirs = ['node_modules', 'data', "bin"];
-    const excludeFiles = ['package-lock.json', 'concatenated.ts'];
 
-    const processDirectory = async (dir: string) => {
+    const processDirectory = async (dir: string, exclude: string[]) => {
         const entries = await fs.readdir(dir, {withFileTypes: true});
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name);
             const relativePath = path.relative(rootDir, fullPath);
-
+            if (exclude.includes(entry.name)) {
+                continue;
+            }
             if (entry.isDirectory()) {
-                if (!excludeDirs.includes(entry.name)) {
-                    await processDirectory(fullPath);
-                }
-            } else if (entry.isFile()) {
-                if (!excludeFiles.includes(entry.name) && /\.(ts|yaml|json)$/.test(entry.name)) {
-                    const fileContent = await fs.readFile(fullPath, 'utf8');
-                    concatenatedContent += `// File: ${relativePath}\n${fileContent}\n`;
-                }
+                await processDirectory(fullPath, exclude);
+                continue;
+            }
+            if (entry.isFile()) {
+                const fileContent = await fs.readFile(fullPath, 'utf8');
+                concatenatedContent += `// File: ${relativePath}\n${fileContent}\n`;
             }
         }
     };
 
-    await processDirectory(rootDir);
+    await processDirectory(rootDir, ['node_modules', 'data', 'apps', 'package-lock.json', 'concatenated.ts']);
+    await processDirectory(path.join(rootDir, 'apps', app), []);
     return concatenatedContent;
 };
 
@@ -133,27 +132,27 @@ const main = async () => {
     - "content" is the content of the file.
     - "operation" is what change need to be done on that file, one of "create", "update", "delete".    
     `
-
-    const task = process.argv[2];
+    const app = process.argv[2];
+    const task = process.argv[3];
 
     try {
         const rootDir = path.resolve(__dirname, '..', '..');
-        const fileContent = await concatenateFiles(rootDir)
+        const fileContent = await concatenateFiles(rootDir, app)
         const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
             {role: 'system', content: setupPrompt, name: "setup"},
             {role: 'system', content: fileContent, name: "content"},
             {role: 'user', content: task, name: "user"}
         ]
         let testPass = false
-        let retryCount = 5
+        let retryLeft = 5
         do {
             const chatGPTResponse = await callChatGPT(messages);
             processAnswer(chatGPTResponse);
             const testResults = await runTests();
             testPass = testResults.testPass;
-            retryCount--;
+            retryLeft--;
             console.log(testResults.errors)
-            console.log("retryCount", retryCount)
+            console.log("retryLeft", retryLeft)
             if (testResults.errors) {
                 messages.push({
                     role: "assistant",
@@ -167,7 +166,7 @@ const main = async () => {
                     Fix it providing new version of files. Use JSON format as in initial prompt. Errors: ${testResults.errors}`
                 })
             }
-        } while (!testPass && retryCount);
+        } while (!testPass && retryLeft);
 
     } catch (error: any) {
         console.error('Error:', error.message);
