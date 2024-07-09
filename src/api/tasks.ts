@@ -11,7 +11,7 @@ type GetTasksResponse = paths['/tasks']['get']['responses']['200']['content']['a
 
 export default function() {
     return {
-        post: async (req: Request, res: Response) => {
+        post: async (req: Request, res: Response, next: Function) => {
             const body: PostTaskRequest = req.body;
             const taskService = new TaskService();
 
@@ -20,25 +20,19 @@ export default function() {
                 const response: PostTaskResponse = createdTask as PostTaskResponse;
                 res.status(201).json(response);
             } catch (error: any) {
-                console.error('Error creating task:', error);
                 if (error instanceof UserNotFoundError) {
                     res.status(400).json({ error: error.message });
                 } else {
-                    res.status(500).send('Internal Server Error');
+                    next(error);
                 }
             }
         },
-        get: async (req: Request, res: Response) => {
+        get: async (req: Request, res: Response, next: Function) => {
             const taskService = new TaskService();
 
-            try {
-                const tasks = await taskService.getAllTasks();
-                const response: GetTasksResponse = tasks as GetTasksResponse;
-                res.status(200).json(response);
-            } catch (error) {
-                console.error('Error getting tasks:', error);
-                res.status(500).send('Internal Server Error');
-            }
+            const tasks = await taskService.getAllTasks();
+            const response: GetTasksResponse = tasks as GetTasksResponse;
+            res.status(200).json(response);
         }
     };
 }

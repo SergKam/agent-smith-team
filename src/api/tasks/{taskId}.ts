@@ -4,23 +4,18 @@ import { UserNotFoundError } from '../../repositories/UserRepository';
 
 export default function() {
     return {
-        get: async (req: Request, res: Response) => {
+        get: async (req: Request, res: Response, next: Function) => {
             const taskId = parseInt(req.params.taskId, 10);
             const taskService = new TaskService();
 
-            try {
-                const task = await taskService.getTaskById(taskId);
-                if (task) {
-                    res.status(200).json(task);
-                } else {
-                    res.status(404).send('Task not found');
-                }
-            } catch (error) {
-                console.error('Error getting task:', error);
-                res.status(500).send('Internal Server Error');
+            const task = await taskService.getTaskById(taskId);
+            if (task) {
+                res.status(200).json(task);
+            } else {
+                res.status(404).send('Task not found');
             }
         },
-        put: async (req: Request, res: Response) => {
+        put: async (req: Request, res: Response, next: Function) => {
             const taskId = parseInt(req.params.taskId, 10);
             const taskService = new TaskService();
             const taskData = req.body;
@@ -33,28 +28,22 @@ export default function() {
                     res.status(404).send('Task not found');
                 }
             } catch (error: any) {
-                console.error('Error updating task:', error);
                 if (error instanceof UserNotFoundError) {
                     res.status(400).json({ error: error.message });
                 } else {
-                    res.status(500).send('Internal Server Error');
+                    next(error);
                 }
             }
         },
-        delete: async (req: Request, res: Response) => {
+        delete: async (req: Request, res: Response, next: Function) => {
             const taskId = parseInt(req.params.taskId, 10);
             const taskService = new TaskService();
 
-            try {
-                const deleted = await taskService.deleteTaskById(taskId);
-                if (deleted) {
-                    res.status(204).send();
-                } else {
-                    res.status(404).send('Task not found');
-                }
-            } catch (error) {
-                console.error('Error deleting task:', error);
-                res.status(500).send('Internal Server Error');
+            const deleted = await taskService.deleteTaskById(taskId);
+            if (deleted) {
+                res.status(204).send();
+            } else {
+                res.status(404).send('Task not found');
             }
         }
     };

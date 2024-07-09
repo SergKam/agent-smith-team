@@ -9,6 +9,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import fs from "fs";
 import tasks from './api/tasks';
 import taskId from './api//tasks/{taskId}';
+import errorMiddleware from './middleware/errorMiddleware';
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -29,7 +30,8 @@ initialize({
     deleteTaskById:taskId().delete,
     getCommentsByTaskId:tasks().get,
     addCommentToTask:tasks().get,
-  }
+  },
+  errorMiddleware: errorMiddleware
 });
 console.log('Express-OpenAPI initialized');
 
