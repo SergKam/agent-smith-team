@@ -91,8 +91,19 @@ const processAnswer = (result: any) => {
         switch (file.operation) {
             case 'create':
                 if (await exists(file.name)) {
-                    throw new Error(`File "${file.name}" already exists`);
+                    console.warn(`File "${file.name}" already exists`);
                 }
+                // creating all folders for the path
+                const folders = file.name.split(path.sep);
+                folders.pop();
+                let currentPath = '';
+                for (const folder of folders) {
+                    currentPath = path.join(currentPath, folder);
+                    if (!await exists(currentPath)) {
+                        await fs.mkdir(currentPath);
+                    }
+                }
+
                 return await fs.writeFile(file.name, file.content);
 
             case 'update':
