@@ -11,7 +11,7 @@ const execAsync = promisify(exec);
 
 const runTests = async () => {
     try {
-        const { stdout, stderr} = await execAsync('npm test');
+        const {stdout, stderr} = await execAsync('npm test');
         console.log(stdout)
         return {testPass: true, errors: stderr};
     } catch (error: any) {
@@ -93,16 +93,9 @@ const processAnswer = (result: any) => {
                 if (await exists(file.name)) {
                     console.warn(`File "${file.name}" already exists`);
                 }
-                // creating all folders for the path
-                const folders = file.name.split(path.sep);
-                folders.pop();
-                let currentPath = '';
-                for (const folder of folders) {
-                    currentPath = path.join(currentPath, folder);
-                    if (!await exists(currentPath)) {
-                        await fs.mkdir(currentPath);
-                    }
-                }
+
+                const folders = path.dirname(file.name);
+                await fs.mkdir(folders, {recursive: true});
 
                 return await fs.writeFile(file.name, file.content);
 
@@ -147,8 +140,8 @@ const main = async () => {
         const rootDir = path.resolve(__dirname, '..', '..');
         const fileContent = await concatenateFiles(rootDir)
         const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
-            {role: 'system', content: setupPrompt, name:"setup"},
-            {role: 'system', content: fileContent, name:"content"},
+            {role: 'system', content: setupPrompt, name: "setup"},
+            {role: 'system', content: fileContent, name: "content"},
             {role: 'user', content: task, name: "user"}
         ]
         let testPass = false
@@ -156,12 +149,12 @@ const main = async () => {
         do {
             const chatGPTResponse = await callChatGPT(messages);
             processAnswer(chatGPTResponse);
-            const testResults =  await runTests();
+            const testResults = await runTests();
             testPass = testResults.testPass;
             retryCount--;
             console.log(testResults.errors)
             console.log("retryCount", retryCount)
-            if(testResults.errors) {
+            if (testResults.errors) {
                 messages.push({
                     role: "assistant",
                     name: "assistant",
