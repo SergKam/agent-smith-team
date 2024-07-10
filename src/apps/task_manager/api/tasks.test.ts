@@ -33,9 +33,22 @@ beforeAll(async () => {
       FOREIGN KEY (relatedTaskId) REFERENCES tasks(id)
     );
   `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS comments (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      taskId INT,
+      userId INT,
+      content TEXT NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (taskId) REFERENCES tasks(id),
+      FOREIGN KEY (userId) REFERENCES users(id)
+    );
+  `);
 });
 
 afterAll(async () => {
+  await pool.query('DROP TABLE IF EXISTS comments;');
   await pool.query('DROP TABLE IF EXISTS task_relations;');
   await pool.query('DROP TABLE IF EXISTS tasks;');
   await pool.query('DROP TABLE IF EXISTS users;');
@@ -258,5 +271,49 @@ describe('DELETE /tasks/:taskId', () => {
       .expect(404);
 
     expect(response.text).toBe('Task not found');
+  });
+});
+
+describe('POST /tasks/:taskId/comments', () => {
+  let taskId: number;
+  let userId: number;
+
+  beforeEach(async () => {
+    const [userResult] = await pool.query(`
+      INSERT INTO users (name)
+      VALUES ('Test User')
+    `);
+    userId = (userResult as any).insertId;
+
+    const [taskResult] = await pool.query(`
+      INSERT INTO tasks (title, description, status, type, priority)
+      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+    `);
+    taskId = (taskResult as any).insertId;
+  });
+
+  afterEach(async () => {
+    await pool.query('DELETE FROM comments');
+    await pool.query('DELETE FROM tasks');
+    await pool.query('DELETE FROM users');
+  });
+
+  it('should add a comment to a task', async () => {
+    const newComment = {
+      content: 'This is a test comment',
+      userId: userId
+    };
+
+    const response = await request(app)
+      .post(`/v1/tasks/${taskId}/comments`)
+      .send(newComment)
+      .expect(201);
+
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toMatchObject({
+      content: newComment.content,
+      userId: newComment.userId,
+      taskId: taskId
+    });
   });
 });

@@ -10,6 +10,7 @@ import fs from "fs";
 import tasks from './api/tasks';
 import taskId from './api/tasks/{taskId}';
 import errorMiddleware from './middleware/errorMiddleware';
+import taskIdComments from './api/tasks/{taskId}/comments';
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -28,7 +29,7 @@ initialize({
     updateTaskById:taskId().put,
     deleteTaskById:taskId().delete,
     getCommentsByTaskId:tasks().get,
-    addCommentToTask:tasks().get,
+    addCommentToTask:taskIdComments().post,
   },
   errorMiddleware: errorMiddleware
 });

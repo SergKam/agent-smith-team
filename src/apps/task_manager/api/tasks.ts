@@ -3,8 +3,6 @@ import { paths } from '../types/api-types';
 import { TaskService } from '../services/TaskService';
 import { UserNotFoundError } from '../repositories/UserRepository';
 
-
-
 type PostTaskRequest = paths['/tasks']['post']['requestBody']['content']['application/json'];
 type PostTaskResponse = paths['/tasks']['post']['responses']['201']['content']['application/json'];
 type GetTasksResponse = paths['/tasks']['get']['responses']['200']['content']['application/json'];
