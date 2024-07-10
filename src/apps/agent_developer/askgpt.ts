@@ -29,7 +29,7 @@ const concatenateFiles = async (rootDir: string, app: string): Promise<string> =
         for (const entry of entries) {
             const fullPath = path.join(dir, entry.name);
             const relativePath = path.relative(rootDir, fullPath);
-            if (exclude.includes(entry.name)) {
+            if (exclude.includes(entry.name) || entry.name.startsWith('.')) {
                 continue;
             }
             if (entry.isDirectory()) {
@@ -39,33 +39,40 @@ const concatenateFiles = async (rootDir: string, app: string): Promise<string> =
             if (entry.isFile()) {
                 const fileContent = await fs.readFile(fullPath, 'utf8');
                 concatenatedContent += `// File: ${relativePath}\n${fileContent}\n`;
+                console.log(relativePath)
             }
         }
     };
 
     await processDirectory(rootDir, ['node_modules', 'data', 'apps', 'package-lock.json', 'concatenated.ts']);
-    await processDirectory(path.join(rootDir, 'apps', app), []);
+    await processDirectory(path.join(rootDir, 'src', 'apps', app), []);
     return concatenatedContent;
 };
 
 
-// Function to call ChatGPT API
-const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]): Promise<any> => {
-    const openai = new OpenAI({
-        apiKey: process.env.OPENAI_KEY
-    });
+const openai = new OpenAI({
+    apiKey: process.env.OPENAI_KEY
+});
 
+const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]): Promise<any> => {
     try {
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o',
-            response_format: {type: "json_object"},
-            seed: 927364,
-            temperature: 0.1,
-            top_p: 1,
-            messages
-        })
-        console.log(completion.choices[0])
-        return completion;
+            const completion = await openai.chat.completions.create({
+                model: 'gpt-4o',
+                response_format: {type: "json_object"},
+                seed: 927364,
+                temperature: 0.1,
+                top_p: 1,
+                messages
+            })
+
+            console.log(completion.choices[0])
+            messages.push({
+                role: "assistant",
+                name: "assistant",
+                content: completion.choices[0].message.content
+            })
+
+            return completion.choices[0].message.content
     } catch (error: any) {
         throw new Error(`Error calling ChatGPT API: ${error.message}`);
     }
@@ -79,14 +86,9 @@ const exists = async (path: string) => {
         return false;
     }
 }
+const processCommand = async (command: string) => {
+    const file = JSON.parse(command)
 
-const processAnswer = (result: any) => {
-    const response = JSON.parse(result.choices[0].message.content)
-    const finish = result.choices[0].finish_reason;
-    if (!response.files) {
-        throw new Error('No files found in response');
-    }
-    response.files.forEach(async (file: any) => {
         switch (file.operation) {
             case 'create':
                 if (await exists(file.name)) {
@@ -95,25 +97,29 @@ const processAnswer = (result: any) => {
 
                 const folders = path.dirname(file.name);
                 await fs.mkdir(folders, {recursive: true});
-
-                return await fs.writeFile(file.name, file.content);
+                await fs.writeFile(file.name, file.content);
+                break
 
             case 'update':
                 if (!await exists(file.name)) {
                     throw new Error(`File "${file.name}" does not exist`);
                 }
-                return await fs.writeFile(file.name, file.content);
+                await fs.writeFile(file.name, file.content);
+                break
 
             case 'delete':
                 if (!await exists(file.name)) {
                     throw new Error(`File "${file.name}" does not exist`);
                 }
-                return await fs.unlink(file.name);
+                await fs.unlink(file.name);
+                break
             default:
                 throw new Error(`Invalid operation "${file.operation}" for file "${file.name}"`);
         }
-    });
-};
+        return file.finished;
+    }
+
+
 
 const main = async () => {
     const setupPrompt = `
@@ -126,17 +132,23 @@ const main = async () => {
     Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
     Follow the code style and structure of the existing code. Use proper types instead of any is possible.
     Prefer enums to strings and booleans. 
-    Include changes in all files that are needed to implement working solution and include tests for all code path
-    Pack results as a json with key "files" containing array of object where each object contains fields:
+    Include changes in all files that are needed to implement working solution and include tests for all code path.
+    For each file you want to create, update, or delete you create a separate answer one command a a time.
+    I will confirm if you can proceed to the next step with the key word "continue".
+    Each you answer should be in JSON format.
+  
+    Where each object contains fields:
+    - "operation" is what change need to be done on that file, one of "create", "update", "delete".
     - "name" is the file path with name and extension.
     - "content" is the content of the file.
-    - "operation" is what change need to be done on that file, one of "create", "update", "delete".    
+    - "comment" is a string that explains the reason for the change.
+    - "finished" is a boolean that indicates if you are done with the whole task.    
     `
     const app = process.argv[2];
     const task = process.argv[3];
 
     try {
-        const rootDir = path.resolve(__dirname, '..', '..');
+        const rootDir = path.resolve(__dirname, '..', '..', '..');
         const fileContent = await concatenateFiles(rootDir, app)
         const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [
             {role: 'system', content: setupPrompt, name: "setup"},
@@ -146,8 +158,20 @@ const main = async () => {
         let testPass = false
         let retryLeft = 5
         do {
-            const chatGPTResponse = await callChatGPT(messages);
-            processAnswer(chatGPTResponse);
+            let finished=false
+            do {
+                const chatGPTResponse = await callChatGPT(messages);
+
+                finished = await processCommand(chatGPTResponse);
+                if (!finished) {
+                    messages.push({
+                        role: "user",
+                        name: "user",
+                        content: "continue"
+                    })
+                }
+            } while (!finished);
+
             const testResults = await runTests();
             testPass = testResults.testPass;
             retryLeft--;
@@ -155,15 +179,12 @@ const main = async () => {
             console.log("retryLeft", retryLeft)
             if (testResults.errors) {
                 messages.push({
-                    role: "assistant",
-                    name: "assistant",
-                    content: chatGPTResponse.choices[0].message.content
-                })
-                messages.push({
                     role: "user",
                     name: "user",
                     content: `There is an error while i was running "npm test". 
-                    Fix it providing new version of files. Use JSON format as in initial prompt. Errors: ${testResults.errors}`
+                    Fix it providing new version of files. Use JSON format as in initial prompt. Only change files
+                    needed to fix the problem with tests.
+                    Errors: ${testResults.errors}`
                 })
             }
         } while (!testPass && retryLeft);
