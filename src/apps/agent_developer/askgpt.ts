@@ -137,10 +137,10 @@ const main = async () => {
   
     Where each object contains fields:
     - "operation" is what change need to be done on that file, one of "create", "update", "delete".
-    - "name" is the file path with name and extension.
-    - "content" is the content of the file.
     - "comment" is a string that explains the reason for the change.
     - "finished" is a boolean that indicates if you are done with the whole task.    
+    - "name" is the file path with name and extension.
+    - "content" is the content of the file.
     `
     const app = process.argv[2];
     const task = process.argv[3];
@@ -149,9 +149,7 @@ const main = async () => {
         const rootDir = path.resolve(__dirname, '..', '..', '..');
         const fileContent = await concatenateFiles(rootDir, app)
         const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [{
-            role: 'system',
-            content: setupPrompt,
-            name: "setup"
+            role: 'system', content: setupPrompt, name: "setup"
         }, {role: 'system', content: fileContent, name: "content"}, {role: 'user', content: task, name: "user"}]
         let testPass = false
         let retryLeft = 5
