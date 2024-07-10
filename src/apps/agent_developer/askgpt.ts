@@ -121,11 +121,16 @@ const main = async () => {
     the code should be properly formatted and should be able to run without any errors.
     Write the code in a way that it is easy to understand.
     Pay attention to the naming of variables and functions.
-    Think on implementation step by step. Use best practices.
+    Think on implementation step by step. 
+    Use best practices.  KISS, SOLID, CleanCode, DRY.
     Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
-    Follow the code style and structure of the existing code. Use proper types instead of any is possible.
-    Prefer enums to strings and booleans. 
-    Include changes in all files that are needed to implement working solution and include tests for all code path.
+    Follow the code style and structure of the existing code. 
+    Use proper types instead of "any" is possible.
+    Use enums instead strings and booleans.
+    Use early returns to reduce the complexity of the code.
+    Use async/await instead of promises or callbacks.     
+    Include changes in all files that are needed to implement working solution.
+    Create tests for all branches.
     For each file you want to create, update, or delete you create a separate answer one command a a time.
     I will confirm if you can proceed to the next step with the key word "continue".
     Each you answer should be in JSON format.
