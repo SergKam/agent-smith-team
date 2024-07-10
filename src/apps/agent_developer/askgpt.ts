@@ -2,83 +2,34 @@ import fs from 'fs/promises';
 import path from 'path';
 import dotenv from "dotenv";
 import OpenAI from "openai";
-import {exec} from 'child_process';
-import {promisify} from 'util';
+import {concatenateFiles, exists, run} from "./lib/fileUtils";
 
 dotenv.config();
-
-const execAsync = promisify(exec);
-
-const runTests = async () => {
-    try {
-        const {stdout, stderr} = await execAsync('npm test');
-        console.log(stdout)
-        return {testPass: true, errors: stderr};
-    } catch (error: any) {
-        return {testPass: false, errors: error.message};
-    }
-};
-
-
-const concatenateFiles = async (rootDir: string, app: string): Promise<string> => {
-    let concatenatedContent = '';
-
-
-    const processDirectory = async (dir: string, exclude: string[]) => {
-        const entries = await fs.readdir(dir, {withFileTypes: true});
-        for (const entry of entries) {
-            const fullPath = path.join(dir, entry.name);
-            const relativePath = path.relative(rootDir, fullPath);
-            if (exclude.includes(entry.name) || entry.name.startsWith('.')) {
-                continue;
-            }
-            if (entry.isDirectory()) {
-                await processDirectory(fullPath, exclude);
-                continue;
-            }
-            if (entry.isFile()) {
-                const fileContent = await fs.readFile(fullPath, 'utf8');
-                concatenatedContent += `// File: ${relativePath}\n${fileContent}\n`;
-                console.log(relativePath)
-            }
-        }
-    };
-
-    await processDirectory(rootDir, ['coverage', 'node_modules', 'data', 'apps', 'package-lock.json', 'concatenated.ts']);
-    await processDirectory(path.join(rootDir, 'src', 'apps', app), []);
-    return concatenatedContent;
-};
-
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY
 });
 
-const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]): Promise<any> => {
-    try {
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-4o', response_format: {type: "json_object"}, seed: 927364, temperature: 0.1, top_p: 1, messages
-        })
-
-        console.log(completion.choices[0])
-        messages.push({
-            role: "assistant", name: "assistant", content: completion.choices[0].message.content
-        })
-
-        return completion.choices[0].message.content
-    } catch (error: any) {
-        throw new Error(`Error calling ChatGPT API: ${error.message}`);
+const callChatGPT = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]): Promise<string> => {
+    const completion = await openai.chat.completions.create({
+        model: 'gpt-4o', response_format: {type: "json_object"}, seed: 927364, temperature: 0.1, top_p: 1, messages
+    })
+    const choice = completion.choices[0]
+    if (!choice || !choice.message.content) {
+        throw new Error("No response from GPT-4o")
     }
+    if (choice.finish_reason !== "stop") {
+        throw new Error(`GPT-4o did not finish. finish_reason=${choice.finish_reason}`)
+    }
+    const content = choice.message.content
+    console.log(choice)
+    messages.push({
+        role: "assistant", name: "assistant", content
+    })
+
+    return content
 };
 
-const exists = async (path: string) => {
-    try {
-        await fs.access(path);
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
 
 const processCommand = async (command: string) => {
     const file = JSON.parse(command)
@@ -113,6 +64,20 @@ const processCommand = async (command: string) => {
     return file.finished;
 }
 
+const generateCode = async (messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[]) => {
+    while (true) {
+        const chatGPTResponse = await callChatGPT(messages);
+
+        const finished = await processCommand(chatGPTResponse);
+        if (finished) {
+            return;
+        }
+
+        messages.push({
+            role: "user", name: "user", content: "continue"
+        })
+    }
+}
 
 const main = async () => {
     const setupPrompt = `
@@ -145,45 +110,33 @@ const main = async () => {
     const app = process.argv[2];
     const task = process.argv[3];
 
-    try {
-        const rootDir = path.resolve(__dirname, '..', '..', '..');
-        const fileContent = await concatenateFiles(rootDir, app)
-        const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [{
-            role: 'system', content: setupPrompt, name: "setup"
-        }, {role: 'system', content: fileContent, name: "content"}, {role: 'user', content: task, name: "user"}]
-        let testPass = false
-        let retryLeft = 5
-        do {
-            let finished = false
-            do {
-                const chatGPTResponse = await callChatGPT(messages);
+    const rootDir = path.resolve(__dirname, '..', '..', '..');
+    const fileContent = await concatenateFiles(rootDir, app)
+    const messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [{
+        role: 'system', content: setupPrompt, name: "setup"
+    }, {role: 'system', content: fileContent, name: "content"}, {role: 'user', content: task, name: "user"}]
+    let retryLeft = 5
+    while (true) {
 
-                finished = await processCommand(chatGPTResponse);
-                if (!finished) {
-                    messages.push({
-                        role: "user", name: "user", content: "continue"
-                    })
-                }
-            } while (!finished);
-
-            const testResults = await runTests();
-            testPass = testResults.testPass;
-            retryLeft--;
-            console.log(testResults.errors)
-            console.log("retryLeft", retryLeft)
-            if (testResults.errors) {
-                messages.push({
-                    role: "user", name: "user", content: `There is an error while i was running "npm test". 
+        await generateCode(messages)
+        const testResults = await run('npm test');
+        if (testResults.testPass) {
+            console.log("Success!")
+            break;
+        }
+        retryLeft--;
+        console.log(testResults.errors)
+        console.log("retryLeft", retryLeft)
+        if (testResults.errors) {
+            messages.push({
+                role: "user", name: "user", content: `There is an error while i was running "npm test". 
                     Fix it providing new version of files. Use JSON format as in initial prompt. Only change files
                     needed to fix the problem with tests.
                     Errors: ${testResults.errors}`
-                })
-            }
-        } while (!testPass && retryLeft);
-
-    } catch (error: any) {
-        console.error('Error:', error.message);
+            })
+        }
     }
+
 };
 
 main();
