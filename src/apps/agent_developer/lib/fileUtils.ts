@@ -24,13 +24,14 @@ export const exists = async (path: string) => {
     }
 }
 
-export const concatenateFiles = async (rootDir: string, app: string): Promise<string> => [...await glob(rootDir + '/**/*', {
-    ignore: ['docker-compose.yml', 'src/shared/api.html', 'coverage/**', 'node_modules/**', 'data/**', 'src/apps/**', 'package-lock.json', 'concatenated.ts', 'LICENSE', 'README.md'],
-    matchBase: true,
-    nodir: true,
-    realpath: true,
-    absolute: false
-}), ...await glob(`${rootDir}/src/apps/${app}/**`, {
-    matchBase: true, nodir: true, realpath: true, absolute: false
-})].map((file) => fs.readFile(file, 'utf8')
-    .then((content) => `// File: ${file}\n${content}\n`)).join('')
+export const concatenateFiles = async (rootDir: string, app: string): Promise<string> => (await Promise.all([...await glob(rootDir + '/**/*', {
+        ignore: ['docker-compose.yml', 'src/shared/api.html', 'coverage/**', 'node_modules/**', 'data/**', 'src/apps/**', 'package-lock.json', 'concatenated.ts', 'LICENSE', 'README.md'],
+        matchBase: true,
+        nodir: true,
+        realpath: true,
+        absolute: false
+    }), ...await glob(`${rootDir}/src/apps/${app}/**`, {
+        matchBase: true, nodir: true, realpath: true, absolute: false
+    })]
+        .map((file) => fs.readFile(file, 'utf8')
+            .then((content) => `// File: ${file}\n${content}\n`)))).join('')

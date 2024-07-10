@@ -124,6 +124,10 @@ const main = async () => {
             console.log("Success!")
             break;
         }
+        if(retryLeft === 0) {
+            console.log("Failed after 5 retries. Exiting")
+            break;
+        }
         retryLeft--;
         console.log(testResults.errors)
         console.log("retryLeft", retryLeft)
