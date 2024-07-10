@@ -1,58 +1,14 @@
 import request from 'supertest';
 import app from '../server';
-import pool from '../db';
+import {cleanupDb, pool} from '../database/db';
+
 
 beforeAll(async () => {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      name VARCHAR(255) NOT NULL
-    );
-  `);
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS tasks (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      title VARCHAR(255) NOT NULL,
-      description TEXT,
-      status ENUM('pending', 'in_progress', 'completed') NOT NULL,
-      type ENUM('story', 'task', 'question', 'bug') NOT NULL,
-      priority ENUM('low', 'medium', 'high', 'critical') NOT NULL,
-      assignedTo INT,
-      FOREIGN KEY (assignedTo) REFERENCES users(id)
-    );
-  `);
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS task_relations (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      taskId INT,
-      relatedTaskId INT,
-      relationType VARCHAR(255),
-      FOREIGN KEY (taskId) REFERENCES tasks(id),
-      FOREIGN KEY (relatedTaskId) REFERENCES tasks(id)
-    );
-  `);
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS comments (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      taskId INT,
-      userId INT,
-      content TEXT NOT NULL,
-      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (taskId) REFERENCES tasks(id),
-      FOREIGN KEY (userId) REFERENCES users(id)
-    );
-  `);
+  await cleanupDb()
 });
 
 afterAll(async () => {
-  await pool.query('DROP TABLE IF EXISTS comments;');
-  await pool.query('DROP TABLE IF EXISTS task_relations;');
-  await pool.query('DROP TABLE IF EXISTS tasks;');
-  await pool.query('DROP TABLE IF EXISTS users;');
-  await pool.end();
+  await cleanupDb()
 });
 
 describe('POST /tasks', () => {
@@ -111,6 +67,8 @@ describe('GET /tasks/:taskId', () => {
   });
 
   afterEach(async () => {
+    await pool.query('DELETE FROM comments');
+    await pool.query('DELETE FROM task_relations');
     await pool.query('DELETE FROM tasks');
   });
 
@@ -173,6 +131,7 @@ describe('PUT /tasks/:taskId', () => {
   let taskId: number;
 
   beforeEach(async () => {
+    await cleanupDb();
     const [result] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
       VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
@@ -181,7 +140,7 @@ describe('PUT /tasks/:taskId', () => {
   });
 
   afterEach(async () => {
-    await pool.query('DELETE FROM tasks');
+    await cleanupDb();
   });
 
   it('should update the task if it exists', async () => {
@@ -242,6 +201,7 @@ describe('DELETE /tasks/:taskId', () => {
   let taskId: number;
 
   beforeEach(async () => {
+    await cleanupDb();
     const [result] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
       VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
@@ -250,7 +210,7 @@ describe('DELETE /tasks/:taskId', () => {
   });
 
   afterEach(async () => {
-    await pool.query('DELETE FROM tasks');
+    await cleanupDb()
   });
 
   it('should delete the task if it exists', async () => {
@@ -279,6 +239,7 @@ describe('POST /tasks/:taskId/comments', () => {
   let userId: number;
 
   beforeEach(async () => {
+    await cleanupDb()
     const [userResult] = await pool.query(`
       INSERT INTO users (name)
       VALUES ('Test User')
@@ -293,9 +254,7 @@ describe('POST /tasks/:taskId/comments', () => {
   });
 
   afterEach(async () => {
-    await pool.query('DELETE FROM comments');
-    await pool.query('DELETE FROM tasks');
-    await pool.query('DELETE FROM users');
+    await cleanupDb()
   });
 
   it('should add a comment to a task', async () => {

@@ -28,7 +28,7 @@ initialize({
     getTaskById:taskId().get,
     updateTaskById:taskId().put,
     deleteTaskById:taskId().delete,
-    getCommentsByTaskId:tasks().get,
+    getCommentsByTaskId:taskIdComments().get,
     addCommentToTask:taskIdComments().post,
   },
   errorMiddleware: errorMiddleware

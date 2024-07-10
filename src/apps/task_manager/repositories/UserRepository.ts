@@ -1,4 +1,4 @@
-import pool from '../db';
+import {getConnection} from '../database/db';
 
 export class UserNotFoundError extends Error {
     constructor(message?: string) {
@@ -9,12 +9,9 @@ export class UserNotFoundError extends Error {
 
 export class UserRepository {
     async userExists(userId: number): Promise<boolean> {
-        const connection = await pool.getConnection();
+        const connection = await getConnection();
         try {
-            const [rows] = await connection.execute(
-                'SELECT id FROM users WHERE id = ?',
-                [userId]
-            );
+            const [rows] = await connection.execute('SELECT id FROM users WHERE id = ?', [userId]);
             return (rows as any[]).length > 0;
         } finally {
             connection.release();

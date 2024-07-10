@@ -1,13 +1,10 @@
-drop database if exists task_manager;
-create database if not exists task_manager;
-use task_manager;
 
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE tasks (
+CREATE TABLE IF NOT EXISTS tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     description TEXT,
@@ -18,7 +15,7 @@ CREATE TABLE tasks (
     FOREIGN KEY (assignedTo) REFERENCES users(id)
 );
 
-CREATE TABLE task_relations (
+CREATE TABLE IF NOT EXISTS task_relations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     taskId INT,
     relatedTaskId INT,
@@ -27,7 +24,7 @@ CREATE TABLE task_relations (
     FOREIGN KEY (relatedTaskId) REFERENCES tasks(id)
 );
 
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     taskId INT,
     userId INT,
