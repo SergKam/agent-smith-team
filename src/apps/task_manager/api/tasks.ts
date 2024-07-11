@@ -2,6 +2,13 @@ import { Request, Response } from 'express';
 import { paths } from '../types/api-types';
 import { TaskService } from '../services/TaskService';
 import { UserNotFoundError } from '../repositories/UserRepository';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import { TaskRelationType } from '../models/TaskRelationType';
+import { TaskRelation } from '../models/Task';
+
+// Define types for request and response bodies
 
 type PostTaskRequest =
   paths['/tasks']['post']['requestBody']['content']['application/json'];
@@ -27,7 +34,16 @@ export default function () {
       const taskService = new TaskService();
 
       try {
-        const createdTask = await taskService.createTask(body);
+        const createdTask = await taskService.createTask({
+          ...body,
+          status: body.status as TaskStatus,
+          type: body.type as TaskType,
+          priority: body.priority as TaskPriority,
+          relations: body.relations?.map((relation) => ({
+            ...relation,
+            relationType: relation.relationType as TaskRelationType,
+          })),
+        });
         const response: PostTaskResponse = createdTask as PostTaskResponse;
         res.status(201).json(response);
       } catch (error: any) {
@@ -63,7 +79,16 @@ export default function () {
       const taskData: PutTaskRequest = req.body;
 
       try {
-        const updatedTask = await taskService.updateTaskById(taskId, taskData);
+        const updatedTask = await taskService.updateTaskById(taskId, {
+          ...taskData,
+          status: taskData.status as TaskStatus,
+          type: taskData.type as TaskType,
+          priority: taskData.priority as TaskPriority,
+          relations: taskData.relations?.map((relation) => ({
+            ...relation,
+            relationType: relation.relationType as TaskRelationType,
+          })),
+        });
         if (!updatedTask) {
           return res.status(404).send('Task not found');
         }

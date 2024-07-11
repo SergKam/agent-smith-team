@@ -1,8 +1,12 @@
 import { getConnection } from '../database/db';
 import { Task, TaskRelation } from '../models/Task';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import { TaskRelationType } from '../models/TaskRelationType';
 
 export class TaskRepository {
-  async createTask(task: Task): Promise<number> {
+  async createTask(task: Omit<Task, 'id'>): Promise<number> {
     const connection = await getConnection();
     try {
       const [result] = await connection.execute(

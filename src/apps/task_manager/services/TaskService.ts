@@ -1,6 +1,13 @@
 import { Task, TaskRelation } from '../models/Task';
 import { TaskRepository } from '../repositories/TaskRepository';
-import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
+import {
+  UserRepository,
+  UserNotFoundError,
+} from '../repositories/UserRepository';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import { TaskRelationType } from '../models/TaskRelationType';
 
 export class TaskService {
   private taskRepository: TaskRepository;
@@ -14,7 +21,7 @@ export class TaskService {
     this.userRepository = userRepository;
   }
 
-  async createTask(task: Task): Promise<Task> {
+  async createTask(task: Omit<Task, 'id'>): Promise<Task> {
     if (task.assignedTo) {
       const userExists = await this.userRepository.userExists(task.assignedTo);
       if (!userExists) {
@@ -32,7 +39,12 @@ export class TaskService {
       },
     );
 
-    const taskId = await this.taskRepository.createTask(task);
+    const taskId = await this.taskRepository.createTask({
+      ...task,
+      status: task.status as TaskStatus,
+      type: task.type as TaskType,
+      priority: task.priority as TaskPriority,
+    });
 
     if (validRelations.length > 0) {
       await this.taskRepository.createTaskRelations(taskId, validRelations);
@@ -68,7 +80,12 @@ export class TaskService {
     }
 
     const updatedTask = { ...existingTask, ...taskData };
-    await this.taskRepository.updateTaskById(taskId, updatedTask);
+    await this.taskRepository.updateTaskById(taskId, {
+      ...updatedTask,
+      status: updatedTask.status as TaskStatus,
+      type: updatedTask.type as TaskType,
+      priority: updatedTask.priority as TaskPriority,
+    });
 
     return updatedTask;
   }

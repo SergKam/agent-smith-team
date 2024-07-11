@@ -1,6 +1,10 @@
 import { TaskRepository } from './TaskRepository';
 import { getConnection } from '../database/db';
 import { Task, TaskRelation } from '../models/Task';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import { TaskRelationType } from '../models/TaskRelationType';
 
 jest.mock('../database/db');
 
@@ -26,9 +30,9 @@ describe('TaskRepository', () => {
     it('should create a new task', async () => {
       const task: Task = {
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       mockConnection.execute.mockResolvedValue([{ insertId: 1 }]);
@@ -53,7 +57,7 @@ describe('TaskRepository', () => {
   describe('createTaskRelations', () => {
     it('should create task relations', async () => {
       const relations: TaskRelation[] = [
-        { relatedTaskId: 2, relationType: 'child' },
+        { relatedTaskId: 2, relationType: TaskRelationType.CHILD },
       ];
 
       mockConnection.execute.mockResolvedValue([{}]);
@@ -62,7 +66,7 @@ describe('TaskRepository', () => {
 
       expect(mockConnection.execute).toHaveBeenCalledWith(
         'INSERT INTO task_relations (taskId, relatedTaskId, relationType) VALUES (?, ?, ?)',
-        [1, 2, 'child'],
+        [1, 2, TaskRelationType.CHILD],
       );
     });
   });
@@ -72,9 +76,9 @@ describe('TaskRepository', () => {
       const task: Task = {
         id: 1,
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       mockConnection.execute.mockResolvedValue([[task]]);
@@ -107,16 +111,16 @@ describe('TaskRepository', () => {
         {
           id: 1,
           title: 'Test Task 1',
-          status: 'pending',
-          type: 'task',
-          priority: 'medium',
+          status: TaskStatus.PENDING,
+          type: TaskType.TASK,
+          priority: TaskPriority.MEDIUM,
         },
         {
           id: 2,
           title: 'Test Task 2',
-          status: 'in_progress',
-          type: 'story',
-          priority: 'high',
+          status: TaskStatus.IN_PROGRESS,
+          type: TaskType.STORY,
+          priority: TaskPriority.HIGH,
         },
       ];
 
@@ -135,7 +139,7 @@ describe('TaskRepository', () => {
     it('should update a task by ID', async () => {
       const taskData: Partial<Task> = {
         title: 'Updated Task',
-        status: 'in_progress',
+        status: TaskStatus.IN_PROGRESS,
       };
 
       mockConnection.execute.mockResolvedValue([{}]);

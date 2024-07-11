@@ -1,6 +1,9 @@
 import request from 'supertest';
 import app from '../../server';
 import { cleanupDb, pool } from '../../database/db';
+import { TaskStatus } from '../../models/TaskStatus';
+import { TaskType } from '../../models/TaskType';
+import { TaskPriority } from '../../models/TaskPriority';
 
 beforeAll(async () => {
   await cleanupDb();
@@ -16,7 +19,7 @@ describe('GET /tasks/:taskId', () => {
   beforeEach(async () => {
     const [result] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
-      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+      VALUES ('Test Task', 'This is a test task', '${TaskStatus.PENDING}', '${TaskType.TASK}', '${TaskPriority.MEDIUM}')
     `);
     taskId = (result as any).insertId;
   });
@@ -46,7 +49,7 @@ describe('PUT /tasks/:taskId', () => {
     await cleanupDb();
     const [result] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
-      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+      VALUES ('Test Task', 'This is a test task', '${TaskStatus.PENDING}', '${TaskType.TASK}', '${TaskPriority.MEDIUM}')
     `);
     taskId = (result as any).insertId;
   });
@@ -59,9 +62,9 @@ describe('PUT /tasks/:taskId', () => {
     const updatedTask = {
       title: 'Updated Task',
       description: 'This is an updated test task',
-      status: 'in_progress',
-      type: 'story',
-      priority: 'high',
+      status: TaskStatus.IN_PROGRESS,
+      type: TaskType.STORY,
+      priority: TaskPriority.HIGH,
     };
 
     const response = await request(app)
@@ -77,9 +80,9 @@ describe('PUT /tasks/:taskId', () => {
     const updatedTask = {
       title: 'Updated Task',
       description: 'This is an updated test task',
-      status: 'in_progress',
-      type: 'story',
-      priority: 'high',
+      status: TaskStatus.IN_PROGRESS,
+      type: TaskType.STORY,
+      priority: TaskPriority.HIGH,
     };
 
     const response = await request(app)
@@ -94,9 +97,9 @@ describe('PUT /tasks/:taskId', () => {
     const updatedTask = {
       title: 'Updated Task',
       description: 'This is an updated test task',
-      status: 'in_progress',
-      type: 'story',
-      priority: 'high',
+      status: TaskStatus.IN_PROGRESS,
+      type: TaskType.STORY,
+      priority: TaskPriority.HIGH,
       assignedTo: 9999,
     };
 
@@ -116,7 +119,7 @@ describe('DELETE /tasks/:taskId', () => {
     await cleanupDb();
     const [result] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
-      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+      VALUES ('Test Task', 'This is a test task', '${TaskStatus.PENDING}', '${TaskType.TASK}', '${TaskPriority.MEDIUM}')
     `);
     taskId = (result as any).insertId;
   });

@@ -5,12 +5,18 @@ import { User } from '../models/User';
 
 // Define types for request and response bodies
 
-type PostUserRequest = paths['/users']['post']['requestBody']['content']['application/json'];
-type PostUserResponse = paths['/users']['post']['responses']['201']['content']['application/json'];
-type GetUsersResponse = paths['/users']['get']['responses']['200']['content']['application/json'];
-type GetUserByIdResponse = paths['/users/{userId}']['get']['responses']['200']['content']['application/json'];
-type PutUserRequest = paths['/users/{userId}']['put']['requestBody']['content']['application/json'];
-type PutUserResponse = paths['/users/{userId}']['put']['responses']['200']['content']['application/json'];
+type PostUserRequest =
+  paths['/users']['post']['requestBody']['content']['application/json'];
+type PostUserResponse =
+  paths['/users']['post']['responses']['201']['content']['application/json'];
+type GetUsersResponse =
+  paths['/users']['get']['responses']['200']['content']['application/json'];
+type GetUserByIdResponse =
+  paths['/users/{userId}']['get']['responses']['200']['content']['application/json'];
+type PutUserRequest =
+  paths['/users/{userId}']['put']['requestBody']['content']['application/json'];
+type PutUserResponse =
+  paths['/users/{userId}']['put']['responses']['200']['content']['application/json'];
 
 export default function () {
   return {

@@ -1,6 +1,9 @@
 import request from 'supertest';
 import app from '../../../server';
 import { cleanupDb, pool } from '../../../database/db';
+import { TaskStatus } from '../../../models/TaskStatus';
+import { TaskType } from '../../../models/TaskType';
+import { TaskPriority } from '../../../models/TaskPriority';
 
 beforeAll(async () => {
   await cleanupDb();
@@ -24,7 +27,7 @@ describe('GET /tasks/:taskId/comments', () => {
 
     const [taskResult] = await pool.query(`
       INSERT INTO tasks (title, description, status, type, priority)
-      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+      VALUES ('Test Task', 'This is a test task', '${TaskStatus.PENDING}', '${TaskType.TASK}', '${TaskPriority.MEDIUM}')
     `);
     taskId = (taskResult as any).insertId;
 

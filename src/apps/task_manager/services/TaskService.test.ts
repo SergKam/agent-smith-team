@@ -1,7 +1,13 @@
 import { TaskService } from './TaskService';
 import { TaskRepository } from '../repositories/TaskRepository';
-import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
-import { Task } from '../models/Task';
+import {
+  UserRepository,
+  UserNotFoundError,
+} from '../repositories/UserRepository';
+import { Task, TaskRelation } from '../models/Task';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
 
 jest.mock('../repositories/TaskRepository');
 jest.mock('../repositories/UserRepository');
@@ -20,9 +26,9 @@ describe('TaskService', () => {
     it('should create a new task', async () => {
       const task: Task = {
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       mockTaskRepository.createTask.mockResolvedValue(1);
@@ -36,15 +42,17 @@ describe('TaskService', () => {
     it('should throw UserNotFoundError if assigned user does not exist', async () => {
       const task: Task = {
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
         assignedTo: 9999,
       };
 
       mockUserRepository.userExists.mockResolvedValue(false);
 
-      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(UserNotFoundError);
+      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(
+        UserNotFoundError,
+      );
     });
   });
 
@@ -53,9 +61,9 @@ describe('TaskService', () => {
       const task: Task = {
         id: 1,
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       mockTaskRepository.getTaskById.mockResolvedValue(task);
@@ -82,16 +90,16 @@ describe('TaskService', () => {
         {
           id: 1,
           title: 'Test Task 1',
-          status: 'pending',
-          type: 'task',
-          priority: 'medium',
+          status: TaskStatus.PENDING,
+          type: TaskType.TASK,
+          priority: TaskPriority.MEDIUM,
         },
         {
           id: 2,
           title: 'Test Task 2',
-          status: 'in_progress',
-          type: 'story',
-          priority: 'high',
+          status: TaskStatus.IN_PROGRESS,
+          type: TaskType.STORY,
+          priority: TaskPriority.HIGH,
         },
       ];
 
@@ -109,14 +117,14 @@ describe('TaskService', () => {
       const existingTask: Task = {
         id: 1,
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       const updatedTaskData: Partial<Task> = {
         title: 'Updated Task',
-        status: 'in_progress',
+        status: TaskStatus.IN_PROGRESS,
       };
 
       const updatedTask: Task = { ...existingTask, ...updatedTaskData };
@@ -149,9 +157,9 @@ describe('TaskService', () => {
       const existingTask: Task = {
         id: 1,
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       const updatedTaskData: Partial<Task> = {
@@ -172,9 +180,9 @@ describe('TaskService', () => {
       const existingTask: Task = {
         id: 1,
         title: 'Test Task',
-        status: 'pending',
-        type: 'task',
-        priority: 'medium',
+        status: TaskStatus.PENDING,
+        type: TaskType.TASK,
+        priority: TaskPriority.MEDIUM,
       };
 
       mockTaskRepository.getTaskById.mockResolvedValue(existingTask);

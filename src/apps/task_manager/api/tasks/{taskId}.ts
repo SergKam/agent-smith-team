@@ -1,6 +1,11 @@
 import { Request, Response } from 'express';
 import { TaskService } from '../../services/TaskService';
 import { UserNotFoundError } from '../../repositories/UserRepository';
+import { TaskStatus } from '../../models/TaskStatus';
+import { TaskType } from '../../models/TaskType';
+import { TaskPriority } from '../../models/TaskPriority';
+import { TaskRelationType } from '../../models/TaskRelationType';
+import { TaskRelation } from '../../models/Task';
 
 export default function () {
   return {
@@ -21,7 +26,16 @@ export default function () {
       const taskData = req.body;
 
       try {
-        const updatedTask = await taskService.updateTaskById(taskId, taskData);
+        const updatedTask = await taskService.updateTaskById(taskId, {
+          ...taskData,
+          status: taskData.status as TaskStatus,
+          type: taskData.type as TaskType,
+          priority: taskData.priority as TaskPriority,
+          relations: taskData.relations?.map((relation: { relationType: TaskRelationType; }) => ({
+            ...relation,
+            relationType: relation.relationType as TaskRelationType,
+          })),
+        });
         if (!updatedTask) {
           return res.status(404).send('Task not found');
         }

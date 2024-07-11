@@ -1,6 +1,6 @@
 import { CommentService } from './CommentService';
 import { CommentRepository } from '../repositories/CommentRepository';
-import { Comment } from '../models/Comment';
+import { Comment, CommentInput } from '../models/Comment';
 
 jest.mock('../repositories/CommentRepository');
 
@@ -15,7 +15,7 @@ beforeEach(() => {
 describe('CommentService', () => {
   describe('addCommentToTask', () => {
     it('should add a comment to a task', async () => {
-      const comment: Comment = {
+      const comment: CommentInput = {
         taskId: 1,
         userId: 1,
         content: 'Test Comment',

@@ -1,4 +1,4 @@
-import { Comment } from '../models/Comment';
+import { Comment, CommentInput } from '../models/Comment';
 import { CommentRepository } from '../repositories/CommentRepository';
 
 export class CommentService {
@@ -10,7 +10,7 @@ export class CommentService {
 
   async addCommentToTask(
     taskId: number,
-    commentData: Comment,
+    commentData: CommentInput,
   ): Promise<Comment> {
     const commentId = await this.commentRepository.createComment({
       ...commentData,
