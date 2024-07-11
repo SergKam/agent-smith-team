@@ -1,9 +1,6 @@
 import { TaskService } from './TaskService';
 import { TaskRepository } from '../repositories/TaskRepository';
-import {
-  UserRepository,
-  UserNotFoundError,
-} from '../repositories/UserRepository';
+import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
 import { Task } from '../models/Task';
 
 jest.mock('../repositories/TaskRepository');
@@ -45,13 +42,9 @@ describe('TaskService', () => {
         assignedTo: 9999,
       };
 
-      mockUserRepository.validateUserExists.mockRejectedValue(
-        new UserNotFoundError(),
-      );
+      mockUserRepository.userExists.mockResolvedValue(false);
 
-      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(
-        UserNotFoundError,
-      );
+      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(UserNotFoundError);
     });
   });
 
@@ -166,9 +159,7 @@ describe('TaskService', () => {
       };
 
       mockTaskRepository.getTaskById.mockResolvedValue(existingTask);
-      mockUserRepository.validateUserExists.mockRejectedValue(
-        new UserNotFoundError(),
-      );
+      mockUserRepository.userExists.mockResolvedValue(false);
 
       await expect(
         taskService.updateTaskById(1, updatedTaskData),

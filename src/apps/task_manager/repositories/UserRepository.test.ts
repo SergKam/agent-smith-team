@@ -1,4 +1,4 @@
-import { UserRepository, UserNotFoundError } from './UserRepository';
+import { UserRepository } from './UserRepository';
 import { getConnection } from '../database/db';
 
 jest.mock('../database/db');
@@ -21,44 +21,92 @@ beforeEach(() => {
 });
 
 describe('UserRepository', () => {
-  describe('userExists', () => {
-    it('should return true if user exists', async () => {
-      mockConnection.execute.mockResolvedValue([[{ id: 1 }]]);
+  describe('createUser', () => {
+    it('should create a new user', async () => {
+      const user = { name: 'Test User' };
 
-      const result = await userRepository.userExists(1);
+      mockConnection.execute.mockResolvedValue([{ insertId: 1 }]);
 
-      expect(result).toBe(true);
+      const result = await userRepository.createUser(user);
+
+      expect(result).toBe(1);
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'SELECT id FROM users WHERE id = ?',
-        [1],
-      );
-    });
-
-    it('should return false if user does not exist', async () => {
-      mockConnection.execute.mockResolvedValue([[]]);
-
-      const result = await userRepository.userExists(1);
-
-      expect(result).toBe(false);
-      expect(mockConnection.execute).toHaveBeenCalledWith(
-        'SELECT id FROM users WHERE id = ?',
-        [1],
+        'INSERT INTO users (name) VALUES (?)',
+        [user.name],
       );
     });
   });
 
-  describe('validateUserExists', () => {
-    it('should not throw an error if user exists', async () => {
-      mockConnection.execute.mockResolvedValue([[{ id: 1 }]]);
+  describe('getUserById', () => {
+    it('should return a user by ID', async () => {
+      const user = { id: 1, name: 'Test User' };
 
-      await expect(userRepository.validateUserExists(1)).resolves.not.toThrow();
+      mockConnection.execute.mockResolvedValue([[user]]);
+
+      const result = await userRepository.getUserById(1);
+
+      expect(result).toEqual(user);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM users WHERE id = ?',
+        [1],
+      );
     });
 
-    it('should throw UserNotFoundError if user does not exist', async () => {
+    it('should return null if user does not exist', async () => {
       mockConnection.execute.mockResolvedValue([[]]);
 
-      await expect(userRepository.validateUserExists(1)).rejects.toBeInstanceOf(
-        UserNotFoundError,
+      const result = await userRepository.getUserById(9999);
+
+      expect(result).toBeNull();
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM users WHERE id = ?',
+        [9999],
+      );
+    });
+  });
+
+  describe('getAllUsers', () => {
+    it('should return all users', async () => {
+      const users = [
+        { id: 1, name: 'User 1' },
+        { id: 2, name: 'User 2' },
+      ];
+
+      mockConnection.execute.mockResolvedValue([users]);
+
+      const result = await userRepository.getAllUsers();
+
+      expect(result).toEqual(users);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM users',
+      );
+    });
+  });
+
+  describe('updateUserById', () => {
+    it('should update a user by ID', async () => {
+      const userData = { name: 'Updated User' };
+
+      mockConnection.execute.mockResolvedValue([{}]);
+
+      await userRepository.updateUserById(1, userData);
+
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'UPDATE users SET name = ? WHERE id = ?',
+        [userData.name, 1],
+      );
+    });
+  });
+
+  describe('deleteUserById', () => {
+    it('should delete a user by ID', async () => {
+      mockConnection.execute.mockResolvedValue([{}]);
+
+      await userRepository.deleteUserById(1);
+
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'DELETE FROM users WHERE id = ?',
+        [1],
       );
     });
   });

@@ -9,6 +9,7 @@ import tasks from './api/tasks';
 import taskId from './api/tasks/{taskId}';
 import errorMiddleware from './middleware/errorMiddleware';
 import taskIdComments from './api/tasks/{taskId}/comments';
+import users from './api/users';
 
 dotenv.config();
 
@@ -31,6 +32,11 @@ const operations = {
   deleteTaskById: taskId().delete,
   getCommentsByTaskId: taskIdComments().get,
   addCommentToTask: taskIdComments().post,
+  getUsers: users().get,
+  createUser: users().post,
+  getUserById: users().getById,
+  updateUserById: users().put,
+  deleteUserById: users().delete,
 };
 
 initialize({

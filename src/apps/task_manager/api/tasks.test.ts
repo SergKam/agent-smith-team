@@ -54,37 +54,6 @@ describe('POST /tasks', () => {
   });
 });
 
-describe('GET /tasks/:taskId', () => {
-  let taskId: number;
-
-  beforeEach(async () => {
-    const [result] = await pool.query(`
-      INSERT INTO tasks (title, description, status, type, priority)
-      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
-    `);
-    taskId = (result as any).insertId;
-  });
-
-  afterEach(async () => {
-    await pool.query('DELETE FROM comments');
-    await pool.query('DELETE FROM task_relations');
-    await pool.query('DELETE FROM tasks');
-  });
-
-  it('should return the task if it exists', async () => {
-    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(200);
-
-    expect(response.body).toHaveProperty('id', taskId);
-    expect(response.body).toHaveProperty('title', 'Test Task');
-  });
-
-  it('should return 404 if the task does not exist', async () => {
-    const response = await request(app).get('/v1/tasks/9999').expect(404);
-
-    expect(response.text).toBe('Task not found');
-  });
-});
-
 describe('GET /tasks', () => {
   beforeEach(async () => {
     // Clear the tasks table and insert some test data
@@ -115,6 +84,37 @@ describe('GET /tasks', () => {
 
     expect(response.body).toBeInstanceOf(Array);
     expect(response.body.length).toBe(0);
+  });
+});
+
+describe('GET /tasks/:taskId', () => {
+  let taskId: number;
+
+  beforeEach(async () => {
+    const [result] = await pool.query(`
+      INSERT INTO tasks (title, description, status, type, priority)
+      VALUES ('Test Task', 'This is a test task', 'pending', 'task', 'medium')
+    `);
+    taskId = (result as any).insertId;
+  });
+
+  afterEach(async () => {
+    await pool.query('DELETE FROM comments');
+    await pool.query('DELETE FROM task_relations');
+    await pool.query('DELETE FROM tasks');
+  });
+
+  it('should return the task if it exists', async () => {
+    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(200);
+
+    expect(response.body).toHaveProperty('id', taskId);
+    expect(response.body).toHaveProperty('title', 'Test Task');
+  });
+
+  it('should return 404 if the task does not exist', async () => {
+    const response = await request(app).get('/v1/tasks/9999').expect(404);
+
+    expect(response.text).toBe('Task not found');
   });
 });
 
