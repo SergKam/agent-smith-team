@@ -96,6 +96,7 @@ const main = async () => {
     Use async/await instead of promises or callbacks.     
     Include changes in all files that are needed to implement working solution.
     Create tests for all branches.
+    FYI jest expect(...).rejects.toThrow(..) doesn't work use rejects.toBeInstanceOf(...) instead.
     For each file you want to create, update, or delete you create a separate answer one command a a time.
     I will confirm if you can proceed to the next step with the key word "continue".
     Each you answer should be in JSON format.

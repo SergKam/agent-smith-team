@@ -3,8 +3,13 @@ import { TaskRepository } from '../repositories/TaskRepository';
 import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
 
 export class TaskService {
-    private taskRepository = new TaskRepository();
-    private userRepository = new UserRepository();
+    private taskRepository: TaskRepository;
+    private userRepository: UserRepository;
+
+    constructor(taskRepository: TaskRepository = new TaskRepository(), userRepository: UserRepository = new UserRepository()) {
+        this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
+    }
 
     async createTask(task: Task): Promise<Task> {
         if (task.assignedTo) {
