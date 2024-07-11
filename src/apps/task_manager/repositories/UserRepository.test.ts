@@ -3,7 +3,9 @@ import { getConnection } from '../database/db';
 
 jest.mock('../database/db');
 
-const mockGetConnection = getConnection as jest.MockedFunction<typeof getConnection>;
+const mockGetConnection = getConnection as jest.MockedFunction<
+  typeof getConnection
+>;
 
 const mockConnection = {
   execute: jest.fn(),
@@ -26,7 +28,10 @@ describe('UserRepository', () => {
       const result = await userRepository.userExists(1);
 
       expect(result).toBe(true);
-      expect(mockConnection.execute).toHaveBeenCalledWith('SELECT id FROM users WHERE id = ?', [1]);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT id FROM users WHERE id = ?',
+        [1],
+      );
     });
 
     it('should return false if user does not exist', async () => {
@@ -35,7 +40,10 @@ describe('UserRepository', () => {
       const result = await userRepository.userExists(1);
 
       expect(result).toBe(false);
-      expect(mockConnection.execute).toHaveBeenCalledWith('SELECT id FROM users WHERE id = ?', [1]);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT id FROM users WHERE id = ?',
+        [1],
+      );
     });
   });
 
@@ -49,7 +57,9 @@ describe('UserRepository', () => {
     it('should throw UserNotFoundError if user does not exist', async () => {
       mockConnection.execute.mockResolvedValue([[]]);
 
-      await expect(userRepository.validateUserExists(1)).rejects.toBeInstanceOf(UserNotFoundError);
+      await expect(userRepository.validateUserExists(1)).rejects.toBeInstanceOf(
+        UserNotFoundError,
+      );
     });
   });
 });

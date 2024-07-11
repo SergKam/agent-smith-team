@@ -8,8 +8,14 @@ export class CommentService {
     this.commentRepository = commentRepository;
   }
 
-  async addCommentToTask(taskId: number, commentData: Comment): Promise<Comment> {
-    const commentId = await this.commentRepository.createComment({ ...commentData, taskId });
+  async addCommentToTask(
+    taskId: number,
+    commentData: Comment,
+  ): Promise<Comment> {
+    const commentId = await this.commentRepository.createComment({
+      ...commentData,
+      taskId,
+    });
     return { ...commentData, id: commentId, taskId };
   }
 

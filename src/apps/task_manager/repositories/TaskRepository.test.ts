@@ -4,7 +4,9 @@ import { Task, TaskRelation } from '../models/Task';
 
 jest.mock('../database/db');
 
-const mockGetConnection = getConnection as jest.MockedFunction<typeof getConnection>;
+const mockGetConnection = getConnection as jest.MockedFunction<
+  typeof getConnection
+>;
 
 const mockConnection = {
   execute: jest.fn(),
@@ -36,7 +38,14 @@ describe('TaskRepository', () => {
       expect(result).toBe(1);
       expect(mockConnection.execute).toHaveBeenCalledWith(
         'INSERT INTO tasks (title, description, status, type, priority, assignedTo) VALUES (?, ?, ?, ?, ?, ?)',
-        [task.title, task.description || null, task.status, task.type, task.priority, task.assignedTo || null]
+        [
+          task.title,
+          task.description || null,
+          task.status,
+          task.type,
+          task.priority,
+          task.assignedTo || null,
+        ],
       );
     });
   });
@@ -53,7 +62,7 @@ describe('TaskRepository', () => {
 
       expect(mockConnection.execute).toHaveBeenCalledWith(
         'INSERT INTO task_relations (taskId, relatedTaskId, relationType) VALUES (?, ?, ?)',
-        [1, 2, 'child']
+        [1, 2, 'child'],
       );
     });
   });
@@ -73,7 +82,10 @@ describe('TaskRepository', () => {
       const result = await taskRepository.getTaskById(1);
 
       expect(result).toEqual(task);
-      expect(mockConnection.execute).toHaveBeenCalledWith('SELECT * FROM tasks WHERE id = ?', [1]);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM tasks WHERE id = ?',
+        [1],
+      );
     });
 
     it('should return null if task does not exist', async () => {
@@ -82,7 +94,10 @@ describe('TaskRepository', () => {
       const result = await taskRepository.getTaskById(9999);
 
       expect(result).toBeNull();
-      expect(mockConnection.execute).toHaveBeenCalledWith('SELECT * FROM tasks WHERE id = ?', [9999]);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM tasks WHERE id = ?',
+        [9999],
+      );
     });
   });
 
@@ -110,7 +125,9 @@ describe('TaskRepository', () => {
       const result = await taskRepository.getAllTasks();
 
       expect(result).toEqual(tasks);
-      expect(mockConnection.execute).toHaveBeenCalledWith('SELECT * FROM tasks');
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'SELECT * FROM tasks',
+      );
     });
   });
 
@@ -127,7 +144,15 @@ describe('TaskRepository', () => {
 
       expect(mockConnection.execute).toHaveBeenCalledWith(
         'UPDATE tasks SET title = ?, description = ?, status = ?, type = ?, priority = ?, assignedTo = ? WHERE id = ?',
-        [taskData.title, taskData.description || null, taskData.status, taskData.type, taskData.priority, taskData.assignedTo || null, 1]
+        [
+          taskData.title,
+          taskData.description || null,
+          taskData.status,
+          taskData.type,
+          taskData.priority,
+          taskData.assignedTo || null,
+          1,
+        ],
       );
     });
   });
@@ -138,7 +163,10 @@ describe('TaskRepository', () => {
 
       await taskRepository.deleteTaskById(1);
 
-      expect(mockConnection.execute).toHaveBeenCalledWith('DELETE FROM tasks WHERE id = ?', [1]);
+      expect(mockConnection.execute).toHaveBeenCalledWith(
+        'DELETE FROM tasks WHERE id = ?',
+        [1],
+      );
     });
   });
 });

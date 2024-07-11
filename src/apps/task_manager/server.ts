@@ -16,7 +16,12 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-const apiDoc = yaml.load(fs.readFileSync(path.resolve(__dirname, '..', '..', 'shared/api.yaml'), 'utf8')) as OpenAPIV3.Document;
+const apiDoc = yaml.load(
+  fs.readFileSync(
+    path.resolve(__dirname, '..', '..', 'shared/api.yaml'),
+    'utf8',
+  ),
+) as OpenAPIV3.Document;
 
 const operations = {
   getTasks: tasks().get,
@@ -32,7 +37,7 @@ initialize({
   app,
   apiDoc,
   promiseMode: true,
-  pathsIgnore: new RegExp('\.(spec|test)$'),
+  pathsIgnore: new RegExp('.(spec|test)$'),
   operations,
   errorMiddleware: errorMiddleware,
 });

@@ -10,7 +10,8 @@
     "mysql": "docker run --rm -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql  -p 3306:3306 mysql:5",
     "ask": "ts-node src/apps/agent_developer/askgpt.ts",
     "test": "jest",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,7 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.2"
+    "typescript": "^5.5.2",
+    "prettier": "^2.8.8"
   }
 }

@@ -1,66 +1,80 @@
 import { Task, TaskRelation } from '../models/Task';
 import { TaskRepository } from '../repositories/TaskRepository';
-import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
+import {
+  UserRepository,
+  UserNotFoundError,
+} from '../repositories/UserRepository';
 
 export class TaskService {
-    private taskRepository: TaskRepository;
-    private userRepository: UserRepository;
+  private taskRepository: TaskRepository;
+  private userRepository: UserRepository;
 
-    constructor(taskRepository: TaskRepository = new TaskRepository(), userRepository: UserRepository = new UserRepository()) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
+  constructor(
+    taskRepository: TaskRepository = new TaskRepository(),
+    userRepository: UserRepository = new UserRepository(),
+  ) {
+    this.taskRepository = taskRepository;
+    this.userRepository = userRepository;
+  }
+
+  async createTask(task: Task): Promise<Task> {
+    if (task.assignedTo) {
+      await this.userRepository.validateUserExists(task.assignedTo);
     }
 
-    async createTask(task: Task): Promise<Task> {
-        if (task.assignedTo) {
-            await this.userRepository.validateUserExists(task.assignedTo);
-        }
+    // Ensure all relations have defined relatedTaskId and relationType
+    const validRelations = (task.relations || []).filter(
+      (relation): relation is TaskRelation => {
+        return (
+          relation.relatedTaskId !== undefined &&
+          relation.relationType !== undefined
+        );
+      },
+    );
 
-        // Ensure all relations have defined relatedTaskId and relationType
-        const validRelations = (task.relations || []).filter((relation): relation is TaskRelation => {
-            return relation.relatedTaskId !== undefined && relation.relationType !== undefined;
-        });
+    const taskId = await this.taskRepository.createTask(task);
 
-        const taskId = await this.taskRepository.createTask(task);
-
-        if (validRelations.length > 0) {
-            await this.taskRepository.createTaskRelations(taskId, validRelations);
-        }
-
-        return { ...task, id: taskId, relations: validRelations };
+    if (validRelations.length > 0) {
+      await this.taskRepository.createTaskRelations(taskId, validRelations);
     }
 
-    async getTaskById(taskId: number): Promise<Task | null> {
-        return this.taskRepository.getTaskById(taskId);
+    return { ...task, id: taskId, relations: validRelations };
+  }
+
+  async getTaskById(taskId: number): Promise<Task | null> {
+    return this.taskRepository.getTaskById(taskId);
+  }
+
+  async getAllTasks(): Promise<Task[]> {
+    return this.taskRepository.getAllTasks();
+  }
+
+  async updateTaskById(
+    taskId: number,
+    taskData: Partial<Task>,
+  ): Promise<Task | null> {
+    const existingTask = await this.taskRepository.getTaskById(taskId);
+    if (!existingTask) {
+      return null;
     }
 
-    async getAllTasks(): Promise<Task[]> {
-        return this.taskRepository.getAllTasks();
+    if (taskData.assignedTo) {
+      await this.userRepository.validateUserExists(taskData.assignedTo);
     }
 
-    async updateTaskById(taskId: number, taskData: Partial<Task>): Promise<Task | null> {
-        const existingTask = await this.taskRepository.getTaskById(taskId);
-        if (!existingTask) {
-            return null;
-        }
+    const updatedTask = { ...existingTask, ...taskData };
+    await this.taskRepository.updateTaskById(taskId, updatedTask);
 
-        if (taskData.assignedTo) {
-            await this.userRepository.validateUserExists(taskData.assignedTo);
-        }
+    return updatedTask;
+  }
 
-        const updatedTask = { ...existingTask, ...taskData };
-        await this.taskRepository.updateTaskById(taskId, updatedTask);
-
-        return updatedTask;
+  async deleteTaskById(taskId: number): Promise<boolean> {
+    const existingTask = await this.taskRepository.getTaskById(taskId);
+    if (!existingTask) {
+      return false;
     }
 
-    async deleteTaskById(taskId: number): Promise<boolean> {
-        const existingTask = await this.taskRepository.getTaskById(taskId);
-        if (!existingTask) {
-            return false;
-        }
-
-        await this.taskRepository.deleteTaskById(taskId);
-        return true;
-    }
+    await this.taskRepository.deleteTaskById(taskId);
+    return true;
+  }
 }

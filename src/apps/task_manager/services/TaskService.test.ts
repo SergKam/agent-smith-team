@@ -1,6 +1,9 @@
 import { TaskService } from './TaskService';
 import { TaskRepository } from '../repositories/TaskRepository';
-import { UserRepository, UserNotFoundError } from '../repositories/UserRepository';
+import {
+  UserRepository,
+  UserNotFoundError,
+} from '../repositories/UserRepository';
 import { Task } from '../models/Task';
 
 jest.mock('../repositories/TaskRepository');
@@ -42,9 +45,13 @@ describe('TaskService', () => {
         assignedTo: 9999,
       };
 
-      mockUserRepository.validateUserExists.mockRejectedValue(new UserNotFoundError());
+      mockUserRepository.validateUserExists.mockRejectedValue(
+        new UserNotFoundError(),
+      );
 
-      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(UserNotFoundError);
+      await expect(taskService.createTask(task)).rejects.toBeInstanceOf(
+        UserNotFoundError,
+      );
     });
   });
 
@@ -128,13 +135,18 @@ describe('TaskService', () => {
 
       expect(result).toEqual(updatedTask);
       expect(mockTaskRepository.getTaskById).toHaveBeenCalledWith(1);
-      expect(mockTaskRepository.updateTaskById).toHaveBeenCalledWith(1, updatedTask);
+      expect(mockTaskRepository.updateTaskById).toHaveBeenCalledWith(
+        1,
+        updatedTask,
+      );
     });
 
     it('should return null if task does not exist', async () => {
       mockTaskRepository.getTaskById.mockResolvedValue(null);
 
-      const result = await taskService.updateTaskById(9999, { title: 'Updated Task' });
+      const result = await taskService.updateTaskById(9999, {
+        title: 'Updated Task',
+      });
 
       expect(result).toBeNull();
       expect(mockTaskRepository.getTaskById).toHaveBeenCalledWith(9999);
@@ -154,9 +166,13 @@ describe('TaskService', () => {
       };
 
       mockTaskRepository.getTaskById.mockResolvedValue(existingTask);
-      mockUserRepository.validateUserExists.mockRejectedValue(new UserNotFoundError());
+      mockUserRepository.validateUserExists.mockRejectedValue(
+        new UserNotFoundError(),
+      );
 
-      await expect(taskService.updateTaskById(1, updatedTaskData)).rejects.toBeInstanceOf(UserNotFoundError);
+      await expect(
+        taskService.updateTaskById(1, updatedTaskData),
+      ).rejects.toBeInstanceOf(UserNotFoundError);
     });
   });
 

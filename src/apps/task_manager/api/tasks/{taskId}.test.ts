@@ -26,18 +26,14 @@ describe('GET /tasks/:taskId', () => {
   });
 
   it('should return the task if it exists', async () => {
-    const response = await request(app)
-      .get(`/v1/tasks/${taskId}`)
-      .expect(200);
+    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(200);
 
     expect(response.body).toHaveProperty('id', taskId);
     expect(response.body).toHaveProperty('title', 'Test Task');
   });
 
   it('should return 404 if the task does not exist', async () => {
-    const response = await request(app)
-      .get('/v1/tasks/9999')
-      .expect(404);
+    const response = await request(app).get('/v1/tasks/9999').expect(404);
 
     expect(response.text).toBe('Task not found');
   });
@@ -65,7 +61,7 @@ describe('PUT /tasks/:taskId', () => {
       description: 'This is an updated test task',
       status: 'in_progress',
       type: 'story',
-      priority: 'high'
+      priority: 'high',
     };
 
     const response = await request(app)
@@ -83,7 +79,7 @@ describe('PUT /tasks/:taskId', () => {
       description: 'This is an updated test task',
       status: 'in_progress',
       type: 'story',
-      priority: 'high'
+      priority: 'high',
     };
 
     const response = await request(app)
@@ -101,7 +97,7 @@ describe('PUT /tasks/:taskId', () => {
       status: 'in_progress',
       type: 'story',
       priority: 'high',
-      assignedTo: 9999
+      assignedTo: 9999,
     };
 
     const response = await request(app)
@@ -130,21 +126,15 @@ describe('DELETE /tasks/:taskId', () => {
   });
 
   it('should delete the task if it exists', async () => {
-    await request(app)
-      .delete(`/v1/tasks/${taskId}`)
-      .expect(204);
+    await request(app).delete(`/v1/tasks/${taskId}`).expect(204);
 
-    const response = await request(app)
-      .get(`/v1/tasks/${taskId}`)
-      .expect(404);
+    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(404);
 
     expect(response.text).toBe('Task not found');
   });
 
   it('should return 404 if the task does not exist', async () => {
-    const response = await request(app)
-      .delete('/v1/tasks/9999')
-      .expect(404);
+    const response = await request(app).delete('/v1/tasks/9999').expect(404);
 
     expect(response.text).toBe('Task not found');
   });

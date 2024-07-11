@@ -1,14 +1,13 @@
 import request from 'supertest';
 import app from '../server';
-import {cleanupDb, pool} from '../database/db';
-
+import { cleanupDb, pool } from '../database/db';
 
 beforeAll(async () => {
-  await cleanupDb()
+  await cleanupDb();
 });
 
 afterAll(async () => {
-  await cleanupDb()
+  await cleanupDb();
 });
 
 describe('POST /tasks', () => {
@@ -18,13 +17,13 @@ describe('POST /tasks', () => {
       description: 'This is a test task',
       status: 'pending',
       type: 'task',
-      priority: 'medium'
+      priority: 'medium',
     };
 
     const response = await request(app)
-        .post('/v1/tasks')
-        .send(newTask)
-        .expect(201);
+      .post('/v1/tasks')
+      .send(newTask)
+      .expect(201);
 
     expect(response.body).toHaveProperty('id');
     expect(response.body).toMatchObject({
@@ -32,7 +31,7 @@ describe('POST /tasks', () => {
       description: newTask.description,
       status: newTask.status,
       type: newTask.type,
-      priority: newTask.priority
+      priority: newTask.priority,
     });
   });
 
@@ -43,13 +42,13 @@ describe('POST /tasks', () => {
       status: 'pending',
       type: 'task',
       priority: 'medium',
-      assignedTo: 9999
+      assignedTo: 9999,
     };
 
     const response = await request(app)
-        .post('/v1/tasks')
-        .send(newTask)
-        .expect(400);
+      .post('/v1/tasks')
+      .send(newTask)
+      .expect(400);
 
     expect(response.body).toHaveProperty('error', 'Assigned user not found');
   });
@@ -73,18 +72,14 @@ describe('GET /tasks/:taskId', () => {
   });
 
   it('should return the task if it exists', async () => {
-    const response = await request(app)
-      .get(`/v1/tasks/${taskId}`)
-      .expect(200);
+    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(200);
 
     expect(response.body).toHaveProperty('id', taskId);
     expect(response.body).toHaveProperty('title', 'Test Task');
   });
 
   it('should return 404 if the task does not exist', async () => {
-    const response = await request(app)
-      .get('/v1/tasks/9999')
-      .expect(404);
+    const response = await request(app).get('/v1/tasks/9999').expect(404);
 
     expect(response.text).toBe('Task not found');
   });
@@ -104,9 +99,7 @@ describe('GET /tasks', () => {
   });
 
   it('should return all tasks', async () => {
-    const response = await request(app)
-      .get('/v1/tasks')
-      .expect(200);
+    const response = await request(app).get('/v1/tasks').expect(200);
 
     expect(response.body).toBeInstanceOf(Array);
     expect(response.body.length).toBe(2);
@@ -118,9 +111,7 @@ describe('GET /tasks', () => {
   it('should return an empty array when no tasks exist', async () => {
     await pool.query('DELETE FROM tasks');
 
-    const response = await request(app)
-      .get('/v1/tasks')
-      .expect(200);
+    const response = await request(app).get('/v1/tasks').expect(200);
 
     expect(response.body).toBeInstanceOf(Array);
     expect(response.body.length).toBe(0);
@@ -149,7 +140,7 @@ describe('PUT /tasks/:taskId', () => {
       description: 'This is an updated test task',
       status: 'in_progress',
       type: 'story',
-      priority: 'high'
+      priority: 'high',
     };
 
     const response = await request(app)
@@ -167,7 +158,7 @@ describe('PUT /tasks/:taskId', () => {
       description: 'This is an updated test task',
       status: 'in_progress',
       type: 'story',
-      priority: 'high'
+      priority: 'high',
     };
 
     const response = await request(app)
@@ -185,7 +176,7 @@ describe('PUT /tasks/:taskId', () => {
       status: 'in_progress',
       type: 'story',
       priority: 'high',
-      assignedTo: 9999
+      assignedTo: 9999,
     };
 
     const response = await request(app)
@@ -210,25 +201,19 @@ describe('DELETE /tasks/:taskId', () => {
   });
 
   afterEach(async () => {
-    await cleanupDb()
+    await cleanupDb();
   });
 
   it('should delete the task if it exists', async () => {
-    await request(app)
-      .delete(`/v1/tasks/${taskId}`)
-      .expect(204);
+    await request(app).delete(`/v1/tasks/${taskId}`).expect(204);
 
-    const response = await request(app)
-      .get(`/v1/tasks/${taskId}`)
-      .expect(404);
+    const response = await request(app).get(`/v1/tasks/${taskId}`).expect(404);
 
     expect(response.text).toBe('Task not found');
   });
 
   it('should return 404 if the task does not exist', async () => {
-    const response = await request(app)
-      .delete('/v1/tasks/9999')
-      .expect(404);
+    const response = await request(app).delete('/v1/tasks/9999').expect(404);
 
     expect(response.text).toBe('Task not found');
   });
@@ -239,7 +224,7 @@ describe('POST /tasks/:taskId/comments', () => {
   let userId: number;
 
   beforeEach(async () => {
-    await cleanupDb()
+    await cleanupDb();
     const [userResult] = await pool.query(`
       INSERT INTO users (name)
       VALUES ('Test User')
@@ -254,13 +239,13 @@ describe('POST /tasks/:taskId/comments', () => {
   });
 
   afterEach(async () => {
-    await cleanupDb()
+    await cleanupDb();
   });
 
   it('should add a comment to a task', async () => {
     const newComment = {
       content: 'This is a test comment',
-      userId: userId
+      userId: userId,
     };
 
     const response = await request(app)
@@ -272,7 +257,7 @@ describe('POST /tasks/:taskId/comments', () => {
     expect(response.body).toMatchObject({
       content: newComment.content,
       userId: newComment.userId,
-      taskId: taskId
+      taskId: taskId,
     });
   });
 });

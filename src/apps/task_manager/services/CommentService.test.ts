@@ -4,7 +4,8 @@ import { Comment } from '../models/Comment';
 
 jest.mock('../repositories/CommentRepository');
 
-const mockCommentRepository = new CommentRepository() as jest.Mocked<CommentRepository>;
+const mockCommentRepository =
+  new CommentRepository() as jest.Mocked<CommentRepository>;
 const commentService = new CommentService(mockCommentRepository);
 
 beforeEach(() => {
@@ -25,7 +26,10 @@ describe('CommentService', () => {
       const result = await commentService.addCommentToTask(1, comment);
 
       expect(result).toEqual({ ...comment, id: 1 });
-      expect(mockCommentRepository.createComment).toHaveBeenCalledWith({ ...comment, taskId: 1 });
+      expect(mockCommentRepository.createComment).toHaveBeenCalledWith({
+        ...comment,
+        taskId: 1,
+      });
     });
   });
 
