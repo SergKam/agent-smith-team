@@ -13,8 +13,5 @@ export default defineConfig({
     },
     base: './',
     root: './src/apps/task_manager_ui',
-    test: {
-        globals: true,
-        environment: 'jsdom'
-    }
+
 });

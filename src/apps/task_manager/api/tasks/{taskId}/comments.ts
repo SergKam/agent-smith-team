@@ -18,6 +18,7 @@ export default function () {
       const commentService = new CommentService();
       const comments = await commentService.getCommentsByTaskId(taskId);
       const response: GetCommentsResponse = comments as GetCommentsResponse;
+      res.header('Content-Range', `comments 0-${comments.length}/${comments.length}`);
       res.status(200).json(response);
     },
     post: async (req: Request, res: Response) => {

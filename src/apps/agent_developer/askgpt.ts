@@ -45,9 +45,11 @@ const processCommand = async (command: string) => {
   const file = JSON.parse(command);
 
   switch (file.operation) {
-    case 'create':
+    case 'write':
       if (await exists(file.name)) {
-        console.warn(`File "${file.name}" already exists`);
+        console.log(`Creating File "${file.name}"`);
+      } else {
+        console.log(`Updating File "${file.name}"`);
       }
 
       const folders = path.dirname(file.name);
@@ -55,11 +57,15 @@ const processCommand = async (command: string) => {
       await fs.writeFile(file.name, file.content);
       break;
 
-    case 'update':
-      if (!(await exists(file.name))) {
-        throw new Error(`File "${file.name}" does not exist`);
+    case 'rename':
+
+      if (file.source && !(await exists(file.source))) {
+        throw new Error(`Source file "${file.source}" does not exist`);
       }
-      await fs.writeFile(file.name, file.content);
+      const renameFolders = path.dirname(file.name);
+      await fs.mkdir(renameFolders, { recursive: true });
+      await fs.rename(file.source,file.name);
+
       break;
 
     case 'delete':
@@ -113,16 +119,17 @@ const main = async () => {
     Include changes in all files that are needed to implement working solution.
     Create tests for all branches.
     FYI jest expect(...).rejects.toThrow(..) doesn't work use rejects.toBeInstanceOf(...) instead.
-    For each file you want to create, update, or delete you create a separate answer one command a a time.
+    For each file you want to write (create or update), rename(move) or delete you create a separate answer. One command at a time.
     I will confirm if you can proceed to the next step with the key word "continue".
-    Each you answer should be in JSON format.
+    Each your answer should be in JSON format.
   
     Where each object contains fields:
-    - "operation" is what change need to be done on that file, one of "create", "update", "delete".
+    - "operation" is what change need to be done on that file, one of [ "write", "rename", "delete" ].
     - "comment" is a string that explains the reason for the change.
-    - "finished" is a boolean that indicates if you are done with the whole task.    
-    - "name" is the file path with name and extension.
+    - "finished" is a boolean that indicates that this is the last operation and you are done with the whole task.    
+    - "name" is the target file path with name and extension.
     - "content" is the content of the file.
+    - "source" (optional, only for "rename" operation )is the source file path with name and extension before renaming. 
     `;
   const app = process.argv[2];
   const task = process.argv[3];
@@ -141,7 +148,7 @@ const main = async () => {
   let retryLeft = 5;
   while (true) {
     await generateCode(messages);
-    const testResults = await run('npm test');
+    const testResults = await run(`npm test ----selectProjects ${app}`);
     if (testResults.testPass) {
       console.log('Success!');
       break;

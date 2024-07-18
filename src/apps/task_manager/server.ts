@@ -1,21 +1,25 @@
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import express from 'express';
 import { initialize } from 'express-openapi';
 import path from 'path';
 import yaml from 'js-yaml';
 import { OpenAPIV3 } from 'openapi-types';
 import fs from 'fs';
+import cors from 'cors';
 import tasks from './api/tasks';
 import taskId from './api/tasks/{taskId}';
 import errorMiddleware from './middleware/errorMiddleware';
 import taskIdComments from './api/tasks/{taskId}/comments';
 import users from './api/users';
 
-dotenv.config();
-
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors(
+  {
+    exposedHeaders: 'Content-Range',
+  },
+));
 app.use(express.json());
 const apiDoc = yaml.load(
   fs.readFileSync(

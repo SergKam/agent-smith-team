@@ -1,13 +1,7 @@
-import fakeRestDataProvider from "ra-data-fakerest";
-const data = {
-  tasks: [
-    { id: 1, title: "Task 1", description: "Description 1", status: "pending", type: "task", priority: "medium" },
-    { id: 2, title: "Task 2", description: "Description 2", status: "in_progress", type: "story", priority: "high" }
-  ]
-};
+import { fetchUtils } from 'react-admin';
+import simpleRestProvider from 'ra-data-simple-rest';
 
+const apiUrl = 'http://localhost:3000/v1';
+const httpClient = fetchUtils.fetchJson;
 
-export const dataProvider = fakeRestDataProvider(
-  data,
-  process.env.NODE_ENV !== "test"
-);
+export const dataProvider = simpleRestProvider(apiUrl, httpClient);

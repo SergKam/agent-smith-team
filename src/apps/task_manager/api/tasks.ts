@@ -59,6 +59,7 @@ export default function () {
 
       const tasks = await taskService.getAllTasks();
       const response: GetTasksResponse = tasks as GetTasksResponse;
+      res.header('Content-Range', `tasks 0-${tasks.length}/${tasks.length}`);
       res.status(200).json(response);
     },
     getById: async (req: Request, res: Response) => {
