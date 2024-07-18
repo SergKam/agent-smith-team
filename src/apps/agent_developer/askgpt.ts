@@ -58,13 +58,12 @@ const processCommand = async (command: string) => {
       break;
 
     case 'rename':
-
       if (file.source && !(await exists(file.source))) {
         throw new Error(`Source file "${file.source}" does not exist`);
       }
       const renameFolders = path.dirname(file.name);
       await fs.mkdir(renameFolders, { recursive: true });
-      await fs.rename(file.source,file.name);
+      await fs.rename(file.source, file.name);
 
       break;
 

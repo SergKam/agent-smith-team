@@ -4,7 +4,7 @@ import fakeRestDataProvider from 'ra-data-fakerest';
 import fs from 'node:fs';
 import path from 'node:path';
 const data = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'data.json'), 'utf-8'),
+  fs.readFileSync(path.join(__dirname, '../_mocks_/data.json'), 'utf-8'),
 );
 const dataProvider = fakeRestDataProvider(data);
 const layout: LayoutComponent = ({ children }) => <div>{children}</div>;

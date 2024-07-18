@@ -1,8 +1,8 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { Resource } from 'react-admin';
-import { UserList } from './UserList';
-import { MockApp } from '../_mocks_/mockApp';
+import { UserList } from '../UserList';
+import { MockApp } from '../../_mocks_/mockApp';
 
 describe('UserList', () => {
   it('renders UserList', async () => {

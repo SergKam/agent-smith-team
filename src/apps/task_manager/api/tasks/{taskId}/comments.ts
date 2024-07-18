@@ -18,7 +18,10 @@ export default function () {
       const commentService = new CommentService();
       const comments = await commentService.getCommentsByTaskId(taskId);
       const response: GetCommentsResponse = comments as GetCommentsResponse;
-      res.header('Content-Range', `comments 0-${comments.length}/${comments.length}`);
+      res.header(
+        'Content-Range',
+        `comments 0-${comments.length}/${comments.length}`,
+      );
       res.status(200).json(response);
     },
     post: async (req: Request, res: Response) => {
@@ -26,10 +29,10 @@ export default function () {
       const commentService = new CommentService();
       const commentData: PostCommentRequest = req.body;
 
-      const createdComment = await commentService.addCommentToTask(
+      const createdComment = await commentService.addCommentToTask(taskId, {
+        ...commentData,
         taskId,
-        { ...commentData, taskId },
-      );
+      });
       const response: PostCommentResponse =
         createdComment as PostCommentResponse;
       res.status(201).json(response);

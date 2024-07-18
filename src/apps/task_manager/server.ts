@@ -15,11 +15,11 @@ import users from './api/users';
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors(
-  {
+app.use(
+  cors({
     exposedHeaders: 'Content-Range',
-  },
-));
+  }),
+);
 app.use(express.json());
 const apiDoc = yaml.load(
   fs.readFileSync(

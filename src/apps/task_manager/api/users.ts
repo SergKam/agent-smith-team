@@ -34,7 +34,7 @@ export default function () {
 
       const users = await userService.getAllUsers();
       const response: GetUsersResponse = users as GetUsersResponse;
-      res.header('Content-Range', `users 0-${users.length}/${users.length}`)
+      res.header('Content-Range', `users 0-${users.length}/${users.length}`);
       res.status(200).json(response);
     },
     getById: async (req: Request, res: Response) => {

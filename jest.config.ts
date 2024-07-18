@@ -11,9 +11,7 @@ module.exports = {
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.tsx'],
       maxWorkers: 1,
-      forceExit: true,
       detectOpenHandles: true,
-      collectCoverage: true,
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
     },
     {
@@ -23,11 +21,8 @@ module.exports = {
       testMatch: ['<rootDir>/**/*.test.tsx'],
       preset: 'ts-jest',
       maxWorkers: 1,
-      forceExit: true,
       detectOpenHandles: true,
-      collectCoverage: true,
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
-
     },
     {
       displayName: 'shared',
@@ -35,9 +30,7 @@ module.exports = {
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.tsx'],
       maxWorkers: 1,
-      forceExit: true,
       detectOpenHandles: true,
-      collectCoverage: true,
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
     },
   ],

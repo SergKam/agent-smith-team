@@ -31,10 +31,12 @@ export default function () {
           status: taskData.status as TaskStatus,
           type: taskData.type as TaskType,
           priority: taskData.priority as TaskPriority,
-          relations: taskData.relations?.map((relation: { relationType: TaskRelationType; }) => ({
-            ...relation,
-            relationType: relation.relationType as TaskRelationType,
-          })),
+          relations: taskData.relations?.map(
+            (relation: { relationType: TaskRelationType }) => ({
+              ...relation,
+              relationType: relation.relationType as TaskRelationType,
+            }),
+          ),
         });
         if (!updatedTask) {
           return res.status(404).send('Task not found');
