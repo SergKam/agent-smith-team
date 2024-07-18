@@ -1,7 +1,7 @@
 {
   "name": "agent-smith-team",
   "version": "1.0.0",
-  "description": "",
+  "description": "AI agent development team",
   "main": "index.js",
   "scripts": {
     "start": "tsc && node src/server.js",
@@ -18,7 +18,7 @@
     "ui:serve": "vite preview"
   },
   "keywords": [],
-  "author": "",
+  "author": "Sergii Kamenskyi",
   "license": "ISC",
   "dependencies": {
     "@babel/preset-env": "^7.24.8",
