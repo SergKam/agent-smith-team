@@ -147,7 +147,7 @@ const main = async () => {
   let retryLeft = 5;
   while (true) {
     await generateCode(messages);
-    const testResults = await run(`npm test ----selectProjects ${app}`);
+    const testResults = await run(`npm test -- --selectProjects ${app}`);
     if (testResults.testPass) {
       console.log('Success!');
       break;
