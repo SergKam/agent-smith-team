@@ -8,6 +8,7 @@ module.exports = {
   detectOpenHandles: true,
   maxConcurrency: 1,
   maxWorkers: 1,
+  retries: 0,
   projects: [
     {
       displayName: 'task_manager',
@@ -22,7 +23,10 @@ module.exports = {
       testEnvironment: '<rootDir>/JestTestEnv',
       testMatch: ['<rootDir>/**/*.test.{tsx, ts}'],
       preset: 'ts-jest',
-      maxWorkers: 1,
+      setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+      maxWorkers: 3,
+      maxConcurrency: 3,
+      retries: 0,
       detectOpenHandles: true,
       collectCoverageFrom: ['<rootDir>/**/*.{tsx, ts}'],
     },

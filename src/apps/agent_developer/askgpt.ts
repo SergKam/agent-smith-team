@@ -14,10 +14,10 @@ const callChatGPT = async (
   messages: OpenAI.Chat.Completions.ChatCompletionMessageParam[],
 ): Promise<string> => {
   const completion = await openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: 'gpt-4o-mini',
     response_format: { type: 'json_object' },
     seed: 927364,
-    temperature: 0.1,
+    temperature: 0.01,
     top_p: 1,
     messages,
   });
@@ -148,6 +148,7 @@ const main = async () => {
   while (true) {
     await generateCode(messages);
     const testResults = await run(`npm test -- --selectProjects ${app}`);
+    console.log(testResults.errors);
     if (testResults.testPass) {
       console.log('Success!');
       break;
@@ -157,7 +158,6 @@ const main = async () => {
       break;
     }
     retryLeft--;
-    console.log(testResults.errors);
     console.log('retryLeft', retryLeft);
     if (testResults.errors) {
       messages.push({

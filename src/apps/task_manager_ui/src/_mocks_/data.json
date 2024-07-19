@@ -2,5 +2,29 @@
   "users": [
     { "id": 12345, "name": "Sergii" },
     { "id": 2, "name": "User 2" }
+  ],
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Task 1",
+      "description": "Description for Task 1",
+      "status": "pending",
+      "priority": "medium",
+      "type": "task",
+      "assignedTo": 12345,
+      "createdAt": "2023-01-01T00:00:00Z",
+      "updatedAt": "2023-01-01T00:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Task 2",
+      "description": "Description for Task 2",
+      "status": "in_progress",
+      "priority": "high",
+      "type": "bug",
+      "assignedTo": 2,
+      "createdAt": "2023-01-02T00:00:00Z",
+      "updatedAt": "2023-01-02T00:00:00Z"
+    }
   ]
 }
