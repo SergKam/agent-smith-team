@@ -43,6 +43,7 @@ export const concatenateFiles = async (
             'concatenated.ts',
             'LICENSE',
             'README.md',
+            '*.ico',
           ],
           matchBase: true,
           nodir: true,

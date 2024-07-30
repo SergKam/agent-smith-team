@@ -32,7 +32,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "js-yaml": "^4.1.0",
     "mysql2": "^3.10.1",
-    "openai": "^4.52.3",
+    "openai": "^4.53.2",
     "openapi-typescript": "^7.0.0",
     "ra-data-simple-rest": "^5.0.4"
   },
