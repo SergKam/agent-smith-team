@@ -14,12 +14,13 @@ export const definition: ChatCompletionTool = {
         },
         command: {
           type: 'string',
-          description: 'is the npm command. For example, "install", "test", "run", etc.',
+          description:
+            'is the npm command. For example, "install", "test", "run", etc.',
         },
         parameters: {
           type: 'string',
           description: 'is the optional parameters for the npm command',
-        }
+        },
       },
       required: ['command'],
     },
@@ -32,5 +33,6 @@ export async function handler(params: any) {
     throw new Error('Missing required parameters');
   }
 
-  await run(`npm ${command} -- ${parameters||''}`);
+  const response = await run(`npm ${command} -- ${parameters || ''}`);
+  return JSON.stringify(response);
 }

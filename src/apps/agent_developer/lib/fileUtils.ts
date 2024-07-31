@@ -9,9 +9,9 @@ export const run = async (command: string) => {
   try {
     const { stdout, stderr } = await execAsync(command);
     console.log(stdout);
-    return { testPass: true, errors: stderr };
+    return { success: true, errors: stderr };
   } catch (error: any) {
-    return { testPass: false, errors: error.message };
+    return { success: false, errors: error.message, stdout: error.stdout };
   }
 };
 
@@ -43,7 +43,6 @@ export const concatenateFiles = async (
             'concatenated.ts',
             'LICENSE',
             'README.md',
-            '*.ico',
           ],
           matchBase: true,
           nodir: true,
@@ -51,6 +50,7 @@ export const concatenateFiles = async (
           absolute: false,
         })),
         ...(await glob(`${rootDir}/src/apps/${app}/**`, {
+          ignore: ['**/*.ico'],
           matchBase: true,
           nodir: true,
           realpath: true,
