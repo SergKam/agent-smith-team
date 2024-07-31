@@ -1,3 +1,4 @@
+import * as readFile from './readFile';
 import * as writeFile from './writeFile';
 import * as deleteFile from './deleteFile';
 import * as renameFile from './renameFile';
@@ -10,6 +11,7 @@ export type Command = {
   handler: Function;
 };
 export const functions: Command[] = [
+  readFile,
   writeFile,
   deleteFile,
   renameFile,

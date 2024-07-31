@@ -56,10 +56,12 @@ export const concatenateFiles = async (
           realpath: true,
           absolute: false,
         })),
-      ].map((file) =>
-        fs
-          .readFile(file, 'utf8')
-          .then((content) => `// File: ${file}\n${content}\n`),
-      ),
+      ]
+      //   .map((file) =>
+      //
+      //   fs
+      //     .readFile(file, 'utf8')
+      //     .then((content) => `// File: ${file}\n${content}\n`),
+      // ),
     )
-  ).join('');
+  ).join('\n');
