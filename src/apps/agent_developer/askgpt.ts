@@ -4,7 +4,6 @@ import OpenAI from 'openai';
 import { concatenateFiles, run } from './lib/fileUtils';
 import { functions } from './tools/functions';
 import { ChatCompletionCreateParamsNonStreaming } from 'openai/src/resources/chat/completions';
-import { attempt } from 'lodash';
 
 dotenv.config();
 
@@ -18,7 +17,7 @@ const callChatGPT = async (
 ) => {
   const tools = functions.map((f) => f.definition);
   const request: ChatCompletionCreateParamsNonStreaming = {
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o',
     response_format: { type: 'json_object' },
     seed: 927364,
     temperature: 0,
@@ -110,7 +109,7 @@ const main = async () => {
     Write the code in a way that it is easy to understand.
     Pay attention to the naming of variables and functions.
     Think on implementation step by step. 
-    Use best practices.  KISS, SOLID, CleanCode, DRY.
+    Use best practices. Keep the code simple and clean.
     Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
     Follow the code style and structure of the existing code. 
     Use proper types instead of "any" if possible.
