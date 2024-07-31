@@ -4,6 +4,7 @@ dotenv.config({ path: '.env.test' });
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+  preset: 'ts-jest',
   forceExit: true,
   detectOpenHandles: true,
   maxConcurrency: 1,
@@ -16,6 +17,7 @@ module.exports = {
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.ts'],
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
+      preset: 'ts-jest',
     },
     {
       displayName: 'shared',
@@ -25,6 +27,7 @@ module.exports = {
       maxWorkers: 1,
       detectOpenHandles: true,
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
+      preset: 'ts-jest',
     },
   ],
 };
