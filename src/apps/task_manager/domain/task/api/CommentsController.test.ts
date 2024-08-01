@@ -1,9 +1,9 @@
 import request from 'supertest';
-import { cleanupDb, pool } from '../../../../database/db';
-import { TaskStatus } from '../../models/TaskStatus';
-import { TaskType } from '../../models/TaskType';
-import { TaskPriority } from '../../models/TaskPriority';
-import app from '../../../../server';
+import { cleanupDb, pool } from '../../../database/db';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import app from '../../../server';
 
 beforeAll(async () => {
   await cleanupDb();
