@@ -15,9 +15,17 @@ The main directories and files are structured as follows:
       - **api**: Contains API route handlers.
       - **database**: Database connection and schema initialization.
       - **middleware**: Express middleware functions.
-      - **models**: TypeScript interfaces and enums representing the domain models.
-      - **repositories**: Data access layer for interacting with the database.
-      - **services**: Business logic layer.
+      - **domain**: Contains domain-specific logic and models.
+        - **user**: User domain.
+          - **models**: TypeScript interfaces and enums representing the user domain models.
+          - **repositories**: Data access layer for interacting with the user database.
+          - **services**: Business logic layer for user domain.
+          - **api**: API route handlers for user domain.
+        - **task**: Task domain.
+          - **models**: TypeScript interfaces and enums representing the task domain models.
+          - **repositories**: Data access layer for interacting with the task database.
+          - **services**: Business logic layer for task domain.
+          - **api**: API route handlers for task domain.
       - **types**: Type definitions generated from the OpenAPI specification.
       - **server.ts**: Entry point for the Task Manager application.
   - **shared**: Shared resources across different applications.

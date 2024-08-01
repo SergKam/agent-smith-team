@@ -1,4 +1,4 @@
-import { CommentService } from './CommentService';
+import { CommentService } from '../services/CommentService';
 import { CommentRepository } from '../repositories/CommentRepository';
 import { Comment, CommentInput } from '../models/Comment';
 

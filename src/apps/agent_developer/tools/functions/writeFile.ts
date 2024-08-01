@@ -7,7 +7,14 @@ export const definition: ChatCompletionTool = {
   type: 'function',
   function: {
     name: 'writeFile',
-    description: 'Write content to a file',
+    description: `Write content to a file. 
+    If the file already exists, it will be overwritten. 
+    If the file does not exist, it will be created.
+    If file exists and the the change is less then half of the file use patchFile function instead.
+    Don't forget to read the file before you write it.
+    Don't call this function if the content is the same as the original file.
+    `
+    ,
     parameters: {
       type: 'object',
       properties: {
@@ -23,7 +30,7 @@ export const definition: ChatCompletionTool = {
           description: 'is the content of the file',
         },
       },
-      required: ['filename', 'content'],
+      required: ['filename', 'content', 'comment'],
     },
   },
 };

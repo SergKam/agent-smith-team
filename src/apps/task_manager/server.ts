@@ -6,11 +6,11 @@ import yaml from 'js-yaml';
 import { OpenAPIV3 } from 'openapi-types';
 import fs from 'fs';
 import cors from 'cors';
-import tasks from './api/tasks';
-import taskId from './api/tasks/{taskId}';
+import tasks from './domain/task/api/TasksController';
+import taskId from './domain/task/api/TaskController';
 import errorMiddleware from './middleware/errorMiddleware';
-import taskIdComments from './api/tasks/{taskId}/comments';
-import users from './api/users';
+import taskIdComments from './domain/task/api/CommentsController';
+import users from './domain/user/api/UserController';
 
 const app = express();
 const port = process.env.PORT || 3000;

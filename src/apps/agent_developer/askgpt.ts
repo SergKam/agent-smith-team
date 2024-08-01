@@ -106,6 +106,10 @@ const main = async () => {
   const setupPrompt = `
     You are the profession senior programming agent.
     Use provided tools to make changes to the codebase.
+    Make sure to keep the changes minimal. Prefer patchFile over writeFile.
+    Read the content of the files before you make changes. Read multiple files using parallel_tool_calls.
+    Read similar files to understand the context and existing practices.
+    Keep files small and focused on a single task. Split the code into multiple files if needed.
     Do not explain anything to me, just give me the best TypeScript code. 
     The code should be logically split into files following domain driven design DDD and clean architecture.
     The code should be properly formatted and should be able to run without any errors.
@@ -113,7 +117,7 @@ const main = async () => {
     Pay attention to the naming of variables and functions.
     Think on implementation step by step. 
     Use best practices. Keep the code simple and clean.
-    Implement necessary unit and end-to-end test. Make sure to keep the changes minimal.
+    Implement necessary unit and end-to-end test. 
     Follow the code style and structure of the existing code. 
     Use proper types instead of "any" if possible.
     Use enums instead strings and booleans.
@@ -122,8 +126,6 @@ const main = async () => {
     Include changes in all files that are needed to implement working solution.
     Create tests for all branches.
     FYI jest expect(...).rejects.toThrow(..) doesn't work use rejects.toBeInstanceOf(...) instead.
-   
-    Do not change the existing tests.
     When you are done, run "npm test --selectProjects ${app}" to check if the code is working.
     If no errors are found, you can submit the code for review by calling function "done".
     `;
