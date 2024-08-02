@@ -1,12 +1,11 @@
 import { Request, Response } from 'express';
-import { paths } from '../types/api-types';
+import { paths } from '../../../types/api-types';
 import { TaskService } from '../services/TaskService';
-import { UserNotFoundError } from '../repositories/UserRepository';
+import { UserNotFoundError } from '../../user/repositories/UserRepository';
 import { TaskStatus } from '../models/TaskStatus';
 import { TaskType } from '../models/TaskType';
 import { TaskPriority } from '../models/TaskPriority';
 import { TaskRelationType } from '../models/TaskRelationType';
-import { TaskRelation } from '../models/Task';
 
 // Define types for request and response bodies
 

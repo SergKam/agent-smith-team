@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CommentService } from '../../../services/CommentService';
 import { paths } from '../../../types/api-types';
+import { CommentService } from '../../task/services/CommentService';
 
 // Define types for request and response bodies
 

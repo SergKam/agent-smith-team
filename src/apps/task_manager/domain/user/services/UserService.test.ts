@@ -1,4 +1,4 @@
-import { UserService } from './UserService';
+import { UserService } from '../services/UserService';
 import { UserRepository } from '../repositories/UserRepository';
 import { User } from '../models/User';
 

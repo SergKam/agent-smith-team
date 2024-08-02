@@ -1,7 +1,7 @@
-import { UserRepository } from './UserRepository';
-import { getConnection } from '../database/db';
+import { UserRepository } from '../repositories/UserRepository';
+import { getConnection } from '../../../database/db';
 
-jest.mock('../database/db');
+jest.mock('../../../database/db');
 
 const mockGetConnection = getConnection as jest.MockedFunction<
   typeof getConnection

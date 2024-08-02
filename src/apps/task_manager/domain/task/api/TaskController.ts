@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
-import { TaskService } from '../../services/TaskService';
-import { UserNotFoundError } from '../../repositories/UserRepository';
-import { TaskStatus } from '../../models/TaskStatus';
-import { TaskType } from '../../models/TaskType';
-import { TaskPriority } from '../../models/TaskPriority';
-import { TaskRelationType } from '../../models/TaskRelationType';
-import { TaskRelation } from '../../models/Task';
+import { TaskService } from '../services/TaskService';
+import { TaskStatus } from '../models/TaskStatus';
+import { TaskType } from '../models/TaskType';
+import { TaskPriority } from '../models/TaskPriority';
+import { TaskRelationType } from '../models/TaskRelationType';
+import { UserNotFoundError } from '../../user/repositories/UserRepository';
 
 export default function () {
   return {

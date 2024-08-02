@@ -7,7 +7,9 @@ export const definition: ChatCompletionTool = {
   type: 'function',
   function: {
     name: 'renameFile',
-    description: 'Write content to a file',
+    description: `Rename or move th file to a new location.
+    Use this function with patchFile if needed instead of writeFile following by deleteFile.
+    `,
     parameters: {
       type: 'object',
       properties: {
@@ -16,14 +18,14 @@ export const definition: ChatCompletionTool = {
         },
         filename: {
           type: 'string',
-          description: 'is the target file path with name and extension.',
+          description: 'is the target file path with name and extension. The file must exist.',
         },
         renameTo: {
           type: 'string',
-          description: 'the new name and path of the file with extension',
+          description: 'the new name and path of the file with extension. The folders will be created recursively if they do not exist.',
         },
       },
-      required: ['filename', 'renameTo'],
+      required: ['filename', 'renameTo', 'comment'],
     },
   },
 };

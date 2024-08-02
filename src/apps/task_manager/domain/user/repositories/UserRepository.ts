@@ -1,4 +1,4 @@
-import { getConnection } from '../database/db';
+import { getConnection } from '../../../database/db';
 import { User } from '../models/User';
 
 export class UserRepository {

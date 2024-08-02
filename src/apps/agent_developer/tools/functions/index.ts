@@ -2,6 +2,7 @@ import * as readFile from './readFile';
 import * as writeFile from './writeFile';
 import * as deleteFile from './deleteFile';
 import * as renameFile from './renameFile';
+import * as patchFile from './patchFile';
 import * as callNpm from './callNpm';
 import * as done from './done';
 import { ChatCompletionTool } from 'openai/src/resources/chat/completions';
@@ -12,6 +13,7 @@ export type Command = {
 };
 export const functions: Command[] = [
   readFile,
+  patchFile,
   writeFile,
   deleteFile,
   renameFile,

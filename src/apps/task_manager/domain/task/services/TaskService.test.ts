@@ -1,16 +1,13 @@
-import { TaskService } from './TaskService';
+import { TaskService } from '../services/TaskService';
 import { TaskRepository } from '../repositories/TaskRepository';
-import {
-  UserRepository,
-  UserNotFoundError,
-} from '../repositories/UserRepository';
-import { Task, TaskRelation } from '../models/Task';
+import { Task } from '../models/Task';
 import { TaskStatus } from '../models/TaskStatus';
 import { TaskType } from '../models/TaskType';
 import { TaskPriority } from '../models/TaskPriority';
+import { UserNotFoundError, UserRepository } from '../../user/repositories/UserRepository';
 
 jest.mock('../repositories/TaskRepository');
-jest.mock('../repositories/UserRepository');
+jest.mock('../../user/repositories/UserRepository');
 
 const mockTaskRepository = new TaskRepository() as jest.Mocked<TaskRepository>;
 const mockUserRepository = new UserRepository() as jest.Mocked<UserRepository>;

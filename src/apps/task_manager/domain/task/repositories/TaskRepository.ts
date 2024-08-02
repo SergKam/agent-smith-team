@@ -1,4 +1,4 @@
-import { getConnection } from '../database/db';
+import { getConnection } from '../../../database/db';
 import { Task, TaskRelation } from '../models/Task';
 import { TaskStatus } from '../models/TaskStatus';
 import { TaskType } from '../models/TaskType';

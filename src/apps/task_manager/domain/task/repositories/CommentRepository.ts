@@ -1,5 +1,5 @@
 import { Comment, CommentInput } from '../models/Comment';
-import { getConnection } from '../database/db';
+import { getConnection } from '../../../database/db';
 
 export class CommentRepository {
   async createComment(comment: CommentInput): Promise<number> {

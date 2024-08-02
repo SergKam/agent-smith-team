@@ -8,7 +8,7 @@ export const definition: ChatCompletionTool = {
   function: {
     name: "readFile",
     description:
-      "Read the content to a file for the context. Before you change the file you need to read it",
+      "Read the content to a file for the context. Before you change the file you need to read it. Use parallel_tool_calls to read multiple files.",
     parameters: {
       type: "object",
       properties: {

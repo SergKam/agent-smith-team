@@ -1,5 +1,5 @@
 import { ErrorRequestHandler } from 'express';
-import { UserNotFoundError } from '../repositories/UserRepository';
+import { UserNotFoundError } from '../domain/user/repositories/UserRepository';
 
 const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err);

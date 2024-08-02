@@ -1,12 +1,12 @@
-import { TaskRepository } from './TaskRepository';
-import { getConnection } from '../database/db';
+import { TaskRepository } from '../repositories/TaskRepository';
+import { getConnection } from '../../../database/db';
 import { Task, TaskRelation } from '../models/Task';
 import { TaskStatus } from '../models/TaskStatus';
 import { TaskType } from '../models/TaskType';
 import { TaskPriority } from '../models/TaskPriority';
 import { TaskRelationType } from '../models/TaskRelationType';
 
-jest.mock('../database/db');
+jest.mock('../../../database/db');
 
 const mockGetConnection = getConnection as jest.MockedFunction<
   typeof getConnection

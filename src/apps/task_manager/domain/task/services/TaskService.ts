@@ -1,13 +1,13 @@
-import { Task, TaskRelation } from '../models/Task';
-import { TaskRepository } from '../repositories/TaskRepository';
+
 import {
   UserRepository,
   UserNotFoundError,
-} from '../repositories/UserRepository';
+} from '../../user/repositories/UserRepository';
 import { TaskStatus } from '../models/TaskStatus';
 import { TaskType } from '../models/TaskType';
 import { TaskPriority } from '../models/TaskPriority';
-import { TaskRelationType } from '../models/TaskRelationType';
+import { Task, TaskRelation } from '../models/Task';
+import { TaskRepository } from '../repositories/TaskRepository';
 
 export class TaskService {
   private taskRepository: TaskRepository;

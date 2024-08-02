@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { paths } from '../types/api-types';
+import { paths } from '../../../types/api-types';
 import { UserService } from '../services/UserService';
 import { User } from '../models/User';
+
 
 // Define types for request and response bodies
 
