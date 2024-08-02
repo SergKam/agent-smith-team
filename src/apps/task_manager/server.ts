@@ -1,6 +1,11 @@
 import "dotenv/config";
 import express from "express";
 import { initialize } from "express-openapi";
+import { createUser } from "./domain/user/api/actions/createUser";
+import { getAllUsers } from "./domain/user/api/actions/getAllUsers";
+import { getUserById } from "./domain/user/api/actions/getUserById";
+import { updateUserById } from "./domain/user/api/actions/updateUserById";
+import { deleteUserById } from "./domain/user/api/actions/deleteUserById";
 import path from "path";
 import yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
@@ -10,7 +15,7 @@ import tasks from "./domain/task/api/TasksController";
 import taskId from "./domain/task/api/TaskController";
 import errorMiddleware from "./middleware/errorMiddleware";
 import taskIdComments from "./domain/task/api/CommentsController";
-import users from "./domain/user/api/UserController";
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -36,11 +41,11 @@ const operations = {
   deleteTaskById: taskId().delete,
   getCommentsByTaskId: taskIdComments().get,
   addCommentToTask: taskIdComments().post,
-  getUsers: users().get,
-  createUser: users().post,
-  getUserById: users().getById,
-  updateUserById: users().put,
-  deleteUserById: users().delete,
+  getUsers: getAllUsers,
+  createUser: createUser,
+  getUserById: getUserById,
+  updateUserById: updateUserById,
+  deleteUserById: deleteUserById,
 };
 
 initialize({
