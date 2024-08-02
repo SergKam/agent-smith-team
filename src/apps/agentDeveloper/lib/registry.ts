@@ -10,4 +10,10 @@ export const registry = createProviderRegistry({
   openai: createOpenAI({
     apiKey: process.env.OPENAI_KEY,
   }),
+
+  groq: createOpenAI({
+    baseURL: 'https://api.groq.com/openai/v1',
+    apiKey: process.env.GROQ_API_KEY,
+  }),
+
 });
