@@ -8,7 +8,7 @@
     "dev": "ts-node src/apps/task_manager/server.ts",
     "generate-types": "openapi-typescript src/shared/api.yaml --output src/apps/task_manager/types/api-types.ts",
     "mysql": "docker run --rm -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql  -p 3306:3306 mysql:5",
-    "ask": "ts-node src/apps/agent_developer/askgpt.ts",
+    "ask": "ts-node src/apps/agentDeveloper/askgpt.ts",
     "test": "jest",
     "tsc": "tsc",
     "format": "prettier --write .",
@@ -18,8 +18,11 @@
   "author": "Sergii Kamenskyi",
   "license": "ISC",
   "dependencies": {
+    "@ai-sdk/anthropic": "^0.0.35",
+    "@ai-sdk/openai": "^0.0.40",
     "@babel/preset-env": "^7.24.8",
     "@babel/preset-typescript": "^7.24.7",
+    "ai": "^3.3.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -27,7 +30,6 @@
     "glob": "^10.4.5",
     "js-yaml": "^4.1.0",
     "mysql2": "^3.10.1",
-    "openai": "^4.53.2",
     "openapi-typescript": "^7.0.0"
   },
   "devDependencies": {

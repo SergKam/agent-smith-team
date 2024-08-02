@@ -53,7 +53,7 @@ The main directories and files are structured as follows:
 
 - **Start the application**: `npm run start`
 - **Run the application in development mode**: `npm run dev`
-- **Generate TypeScript types from OpenAPI spec**: `npm run generate-types`
+- **Generate TypeScript types from OpenAPI spec**: `npm run generate-types` (run this command after updating the OpenAPI spec in `shared/api.yaml`)
 - **Run MySQL in Docker**: `npm run mysql`
 - **Run tests**: `npm test`
 - **Compile TypeScript**: `npm run tsc`
@@ -82,6 +82,11 @@ The application is designed using domain-driven design (DDD) and clean architect
 ## Testing
 
 The project uses Jest for unit and end-to-end testing. Test files are located alongside the files they test and follow the naming convention `*.test.ts`.
+
+*Note*: The tests require a running MySQL database. You can start a MySQL instance using the `npm run mysql` command.
+
+*Warning*:     
+ In jest `expect(...).rejects.toThrow(..)` doesn't work use `expect(...).rejects.toBeInstanceOf(...)` instead.
 
 ## Environment Variables
 
