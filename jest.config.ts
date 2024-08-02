@@ -4,6 +4,7 @@ dotenv.config({ path: '.env.test' });
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
+  preset: 'ts-jest',
   forceExit: true,
   detectOpenHandles: true,
   maxConcurrency: 1,
@@ -16,19 +17,7 @@ module.exports = {
       testEnvironment: 'node',
       testMatch: ['<rootDir>/**/*.test.ts'],
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
-    },
-    {
-      displayName: 'task_manager_ui',
-      rootDir: './src/apps/task_manager_ui',
-      testEnvironment: '<rootDir>/JestTestEnv',
-      testMatch: ['<rootDir>/**/*.test.{tsx, ts}'],
       preset: 'ts-jest',
-      setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
-      maxWorkers: 3,
-      maxConcurrency: 3,
-      retries: 0,
-      detectOpenHandles: true,
-      collectCoverageFrom: ['<rootDir>/**/*.{tsx, ts}'],
     },
     {
       displayName: 'shared',
@@ -38,6 +27,7 @@ module.exports = {
       maxWorkers: 1,
       detectOpenHandles: true,
       collectCoverageFrom: ['<rootDir>/**/*.ts'],
+      preset: 'ts-jest',
     },
   ],
 };

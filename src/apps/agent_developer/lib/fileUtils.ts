@@ -9,9 +9,9 @@ export const run = async (command: string) => {
   try {
     const { stdout, stderr } = await execAsync(command);
     console.log(stdout);
-    return { testPass: true, errors: stderr };
+    return { success: true, errors: stderr };
   } catch (error: any) {
-    return { testPass: false, errors: error.message };
+    return { success: false, errors: error.message, stdout: error.stdout };
   }
 };
 
@@ -50,15 +50,18 @@ export const concatenateFiles = async (
           absolute: false,
         })),
         ...(await glob(`${rootDir}/src/apps/${app}/**`, {
+          ignore: ['**/*.ico'],
           matchBase: true,
           nodir: true,
           realpath: true,
           absolute: false,
         })),
-      ].map((file) =>
-        fs
-          .readFile(file, 'utf8')
-          .then((content) => `// File: ${file}\n${content}\n`),
-      ),
+      ]
+      //   .map((file) =>
+      //
+      //   fs
+      //     .readFile(file, 'utf8')
+      //     .then((content) => `// File: ${file}\n${content}\n`),
+      // ),
     )
-  ).join('');
+  ).join('\n');
