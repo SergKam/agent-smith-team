@@ -40,7 +40,14 @@ The main directories and files are structured as follows:
 - **Supertest**: Library for testing Node.js HTTP servers.
 - **dotenv**: Module to load environment variables from a .env file.
 - **express-openapi**: Middleware for building APIs using OpenAPI specification.
+It is used to define the API routes using the OpenAPI 
+specification in `shared/api.yaml`.
+The middleware automatically validates the request payloads against the OpenAPI schema.
+There is no need to write separate validation logic for the input parameter/payload types 
+and presents of required parameters.
 - **openapi-typescript**: Tool to generate TypeScript types from OpenAPI specifications.
+The TypeScript types are generated from the OpenAPI specification and used throughout the application.
+
 
 ## Common Patterns
 
