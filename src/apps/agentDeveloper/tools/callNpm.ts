@@ -21,6 +21,7 @@ export const callNpm = tool({
     console.log(`Running npm ${command} ${parameters || ""}`);
     console.log(comment);
     const response = await run(`npm ${command} -- ${parameters || ""}`);
+    console.log(response);
     return JSON.stringify(response);
   },
 });

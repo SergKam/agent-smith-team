@@ -22,7 +22,8 @@ export const writeFile = tool({
     content: z.string().describe("The content of the file"),
   }),
   execute: async ({ comment, filename, content }) => {
-    if (await exists(filename)) {
+    let isUpdate = await exists(filename);
+    if (isUpdate) {
       console.log(`Updating File "${filename}"`);
     } else {
       console.log(`Creating File "${filename}"`);
@@ -32,5 +33,6 @@ export const writeFile = tool({
     const folders = path.dirname(filename);
     await fs.mkdir(folders, { recursive: true });
     await fs.writeFile(filename, content);
+    return isUpdate ? "File updated" : "File created";
   },
 });

@@ -1,13 +1,11 @@
 import path from "path";
-import dotenv from "dotenv";
+import "dotenv/config";
 
 import { concatenateFiles, exists } from "./lib/fileUtils";
 import { generateText } from 'ai';
 import fs from "fs/promises";
 import { registry } from './lib/registry';
 import * as tools from './tools'
-dotenv.config();
-
 
 const main = async () => {
   const app = process.argv[2];

@@ -26,5 +26,6 @@ export const deleteFile = tool({
     }
 
     await fs.unlink(filename);
+    return "File deleted";
   },
 });

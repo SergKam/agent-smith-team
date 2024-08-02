@@ -30,5 +30,6 @@ export const renameFile = tool({
     const renameFolders = path.dirname(renameTo);
     await fs.mkdir(renameFolders, { recursive: true });
     await fs.rename(filename, renameTo);
+    return "File renamed";
   },
 });

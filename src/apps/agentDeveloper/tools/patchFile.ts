@@ -43,5 +43,6 @@ export const patchFile = tool({
     }
 
     await fs.writeFile(filename, newContent);
+    return "File patched";
   },
 });
