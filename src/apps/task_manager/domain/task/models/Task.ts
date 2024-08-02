@@ -1,7 +1,7 @@
-import { TaskStatus } from "./models/TaskStatus";
-import { TaskType } from "./models/TaskType";
-import { TaskPriority } from "./models/TaskPriority";
-import { TaskRelationType } from "./models/TaskRelationType";
+import { TaskStatus } from "./TaskStatus";
+import { TaskType } from "./TaskType";
+import { TaskPriority } from "./TaskPriority";
+import { TaskRelationType } from "./TaskRelationType";
 
 export interface Task {
   id?: number;
