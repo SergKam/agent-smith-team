@@ -1,5 +1,5 @@
-import { User } from '../models/User';
-import { UserRepository } from '../repositories/UserRepository';
+import { User } from "../models/User";
+import { UserRepository } from "../repositories/UserRepository";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -8,7 +8,7 @@ export class UserService {
     this.userRepository = userRepository;
   }
 
-  async createUser(user: Omit<User, 'id'>): Promise<User> {
+  async createUser(user: Omit<User, "id">): Promise<User> {
     const userId = await this.userRepository.createUser(user);
     return { ...user, id: userId };
   }
@@ -23,7 +23,7 @@ export class UserService {
 
   async updateUserById(
     userId: number,
-    userData: Partial<User>,
+    userData: Partial<User>
   ): Promise<User | null> {
     const existingUser = await this.userRepository.getUserById(userId);
     if (!existingUser) {

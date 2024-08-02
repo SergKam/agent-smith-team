@@ -1,12 +1,12 @@
-import { getConnection } from '../../../database/db';
-import { Task, TaskRelation } from '../models/Task';
-import { TaskStatus } from '../models/TaskStatus';
-import { TaskType } from '../models/TaskType';
-import { TaskPriority } from '../models/TaskPriority';
-import { TaskRelationType } from '../models/TaskRelationType';
+import { getConnection } from "../../../database/db";
+import { Task, TaskRelation } from "../models/Task";
+import { TaskStatus } from "../models/TaskStatus";
+import { TaskType } from "../models/TaskType";
+import { TaskPriority } from "../models/TaskPriority";
+import { TaskRelationType } from "../models/TaskRelationType";
 
 export class TaskRepository {
-  async createTask(task: Omit<Task, 'id'>): Promise<number> {
+  async createTask(task: Omit<Task, "id">): Promise<number> {
     const connection = await getConnection();
     try {
       const [result] = await connection.execute(
@@ -18,7 +18,7 @@ export class TaskRepository {
           task.type,
           task.priority,
           task.assignedTo || null,
-        ],
+        ]
       );
       return (result as any).insertId;
     } finally {
@@ -28,15 +28,15 @@ export class TaskRepository {
 
   async createTaskRelations(
     taskId: number,
-    relations: TaskRelation[],
+    relations: TaskRelation[]
   ): Promise<void> {
     const connection = await getConnection();
     try {
       const relationQueries = relations.map((relation: TaskRelation) =>
         connection.execute(
           `INSERT INTO task_relations (taskId, relatedTaskId, relationType) VALUES (?, ?, ?)`,
-          [taskId, relation.relatedTaskId, relation.relationType],
-        ),
+          [taskId, relation.relatedTaskId, relation.relationType]
+        )
       );
       await Promise.all(relationQueries);
     } finally {
@@ -48,8 +48,8 @@ export class TaskRepository {
     const connection = await getConnection();
     try {
       const [rows] = await connection.execute(
-        'SELECT * FROM tasks WHERE id = ?',
-        [taskId],
+        "SELECT * FROM tasks WHERE id = ?",
+        [taskId]
       );
       const tasks = rows as Task[];
       return tasks.length > 0 ? tasks[0] : null;
@@ -61,7 +61,7 @@ export class TaskRepository {
   async getAllTasks(): Promise<Task[]> {
     const connection = await getConnection();
     try {
-      const [rows] = await connection.execute('SELECT * FROM tasks');
+      const [rows] = await connection.execute("SELECT * FROM tasks");
       return rows as Task[];
     } finally {
       connection.release();
@@ -83,7 +83,7 @@ export class TaskRepository {
           priority,
           assignedTo || null,
           taskId,
-        ],
+        ]
       );
     } finally {
       connection.release();
@@ -93,7 +93,7 @@ export class TaskRepository {
   async deleteTaskById(taskId: number): Promise<void> {
     const connection = await getConnection();
     try {
-      await connection.execute('DELETE FROM tasks WHERE id = ?', [taskId]);
+      await connection.execute("DELETE FROM tasks WHERE id = ?", [taskId]);
     } finally {
       connection.release();
     }

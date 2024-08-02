@@ -1,8 +1,8 @@
-import { CommentService } from '../services/CommentService';
-import { CommentRepository } from '../repositories/CommentRepository';
-import { Comment, CommentInput } from '../models/Comment';
+import { CommentService } from "../services/CommentService";
+import { CommentRepository } from "../repositories/CommentRepository";
+import { Comment, CommentInput } from "../models/Comment";
 
-jest.mock('../repositories/CommentRepository');
+jest.mock("../repositories/CommentRepository");
 
 const mockCommentRepository =
   new CommentRepository() as jest.Mocked<CommentRepository>;
@@ -12,13 +12,13 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('CommentService', () => {
-  describe('addCommentToTask', () => {
-    it('should add a comment to a task', async () => {
+describe("CommentService", () => {
+  describe("addCommentToTask", () => {
+    it("should add a comment to a task", async () => {
       const comment: CommentInput = {
         taskId: 1,
         userId: 1,
-        content: 'Test Comment',
+        content: "Test Comment",
       };
 
       mockCommentRepository.createComment.mockResolvedValue(1);
@@ -33,14 +33,14 @@ describe('CommentService', () => {
     });
   });
 
-  describe('getCommentsByTaskId', () => {
-    it('should return comments for a specific task', async () => {
+  describe("getCommentsByTaskId", () => {
+    it("should return comments for a specific task", async () => {
       const comments: Comment[] = [
         {
           id: 1,
           taskId: 1,
           userId: 1,
-          content: 'Test Comment',
+          content: "Test Comment",
         },
       ];
 

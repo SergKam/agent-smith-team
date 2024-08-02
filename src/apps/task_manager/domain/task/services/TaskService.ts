@@ -1,13 +1,12 @@
-
 import {
   UserRepository,
   UserNotFoundError,
-} from '../../user/repositories/UserRepository';
-import { TaskStatus } from '../models/TaskStatus';
-import { TaskType } from '../models/TaskType';
-import { TaskPriority } from '../models/TaskPriority';
-import { Task, TaskRelation } from '../models/Task';
-import { TaskRepository } from '../repositories/TaskRepository';
+} from "../../user/repositories/UserRepository";
+import { TaskStatus } from "../models/TaskStatus";
+import { TaskType } from "../models/TaskType";
+import { TaskPriority } from "../models/TaskPriority";
+import { Task, TaskRelation } from "../models/Task";
+import { TaskRepository } from "../repositories/TaskRepository";
 
 export class TaskService {
   private taskRepository: TaskRepository;
@@ -15,17 +14,17 @@ export class TaskService {
 
   constructor(
     taskRepository: TaskRepository = new TaskRepository(),
-    userRepository: UserRepository = new UserRepository(),
+    userRepository: UserRepository = new UserRepository()
   ) {
     this.taskRepository = taskRepository;
     this.userRepository = userRepository;
   }
 
-  async createTask(task: Omit<Task, 'id'>): Promise<Task> {
+  async createTask(task: Omit<Task, "id">): Promise<Task> {
     if (task.assignedTo) {
       const userExists = await this.userRepository.userExists(task.assignedTo);
       if (!userExists) {
-        throw new UserNotFoundError('Assigned user not found');
+        throw new UserNotFoundError("Assigned user not found");
       }
     }
 
@@ -36,7 +35,7 @@ export class TaskService {
           relation.relatedTaskId !== undefined &&
           relation.relationType !== undefined
         );
-      },
+      }
     );
 
     const taskId = await this.taskRepository.createTask({
@@ -63,7 +62,7 @@ export class TaskService {
 
   async updateTaskById(
     taskId: number,
-    taskData: Partial<Task>,
+    taskData: Partial<Task>
   ): Promise<Task | null> {
     const existingTask = await this.taskRepository.getTaskById(taskId);
     if (!existingTask) {
@@ -72,10 +71,10 @@ export class TaskService {
 
     if (taskData.assignedTo) {
       const userExists = await this.userRepository.userExists(
-        taskData.assignedTo,
+        taskData.assignedTo
       );
       if (!userExists) {
-        throw new UserNotFoundError('Assigned user not found');
+        throw new UserNotFoundError("Assigned user not found");
       }
     }
 

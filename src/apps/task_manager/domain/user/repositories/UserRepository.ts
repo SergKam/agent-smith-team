@@ -1,13 +1,13 @@
-import { getConnection } from '../../../database/db';
-import { User } from '../models/User';
+import { getConnection } from "../../../database/db";
+import { User } from "../models/User";
 
 export class UserRepository {
-  async createUser(user: Omit<User, 'id'>): Promise<number> {
+  async createUser(user: Omit<User, "id">): Promise<number> {
     const connection = await getConnection();
     try {
       const [result] = await connection.execute(
-        'INSERT INTO users (name) VALUES (?)',
-        [user.name],
+        "INSERT INTO users (name) VALUES (?)",
+        [user.name]
       );
       return (result as any).insertId;
     } finally {
@@ -19,8 +19,8 @@ export class UserRepository {
     const connection = await getConnection();
     try {
       const [rows] = await connection.execute(
-        'SELECT * FROM users WHERE id = ?',
-        [userId],
+        "SELECT * FROM users WHERE id = ?",
+        [userId]
       );
       const users = rows as User[];
       return users.length > 0 ? users[0] : null;
@@ -32,7 +32,7 @@ export class UserRepository {
   async getAllUsers(): Promise<User[]> {
     const connection = await getConnection();
     try {
-      const [rows] = await connection.execute('SELECT * FROM users');
+      const [rows] = await connection.execute("SELECT * FROM users");
       return rows as User[];
     } finally {
       connection.release();
@@ -43,7 +43,7 @@ export class UserRepository {
     const connection = await getConnection();
     try {
       const { name } = userData;
-      await connection.execute('UPDATE users SET name = ? WHERE id = ?', [
+      await connection.execute("UPDATE users SET name = ? WHERE id = ?", [
         name,
         userId,
       ]);
@@ -55,7 +55,7 @@ export class UserRepository {
   async deleteUserById(userId: number): Promise<void> {
     const connection = await getConnection();
     try {
-      await connection.execute('DELETE FROM users WHERE id = ?', [userId]);
+      await connection.execute("DELETE FROM users WHERE id = ?", [userId]);
     } finally {
       connection.release();
     }
@@ -65,8 +65,8 @@ export class UserRepository {
     const connection = await getConnection();
     try {
       const [rows] = await connection.execute(
-        'SELECT 1 FROM users WHERE id = ?',
-        [userId],
+        "SELECT 1 FROM users WHERE id = ?",
+        [userId]
       );
       const result = rows as any[];
       return result.length > 0;
@@ -79,6 +79,6 @@ export class UserRepository {
 export class UserNotFoundError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'UserNotFoundError';
+    this.name = "UserNotFoundError";
   }
 }

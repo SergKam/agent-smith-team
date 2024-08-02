@@ -2,6 +2,7 @@ import { exists } from "../lib/fileUtils";
 import fs from "fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
+import { tryCatch } from "../lib/tryCatch";
 
 export const readFile = tool({
   description: `Read the content to a file for the context. 
@@ -15,7 +16,7 @@ export const readFile = tool({
       .string()
       .describe("The target file path with name and extension."),
   }),
-  execute: async ({ comment, filename }) => {
+  execute: tryCatch(async ({ comment, filename }) => {
     console.log(`Reading file: ${filename}`);
     console.log(comment);
 
@@ -24,5 +25,5 @@ export const readFile = tool({
     }
 
     return await fs.readFile(filename, "utf8");
-  },
+  }),
 });

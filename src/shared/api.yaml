@@ -13,14 +13,14 @@ paths:
       operationId: getTasks
       summary: List all tasks
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: "#/components/schemas/Task"
     post:
       operationId: createTask
       summary: Create a new task
@@ -29,14 +29,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskInput'
+              $ref: "#/components/schemas/TaskInput"
       responses:
-        '201':
+        "201":
           description: Task created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
+                $ref: "#/components/schemas/Task"
 
   /tasks/{taskId}:
     get:
@@ -49,13 +49,13 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-        '404':
+                $ref: "#/components/schemas/Task"
+        "404":
           description: Task not found
 
     put:
@@ -72,15 +72,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TaskInput'
+              $ref: "#/components/schemas/TaskInput"
       responses:
-        '200':
+        "200":
           description: Task updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-        '404':
+                $ref: "#/components/schemas/Task"
+        "404":
           description: Task not found
 
     delete:
@@ -93,9 +93,9 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: Task deleted successfully
-        '404':
+        "404":
           description: Task not found
 
   /tasks/{taskId}/comments:
@@ -109,14 +109,14 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Comment'
+                  $ref: "#/components/schemas/Comment"
 
     post:
       operationId: addCommentToTask
@@ -132,28 +132,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CommentInput'
+              $ref: "#/components/schemas/CommentInput"
       responses:
-        '201':
+        "201":
           description: Comment added successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Comment'
+                $ref: "#/components/schemas/Comment"
 
   /users:
     get:
       operationId: getUsers
       summary: List all users
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/User'
+                  $ref: "#/components/schemas/User"
     post:
       operationId: createUser
       summary: Create a new user
@@ -162,14 +162,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: "#/components/schemas/UserInput"
       responses:
-        '201':
+        "201":
           description: User created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: "#/components/schemas/User"
 
   /users/{userId}:
     get:
@@ -182,13 +182,13 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
+                $ref: "#/components/schemas/User"
+        "404":
           description: User not found
 
     put:
@@ -205,15 +205,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserInput'
+              $ref: "#/components/schemas/UserInput"
       responses:
-        '200':
+        "200":
           description: User updated successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
-        '404':
+                $ref: "#/components/schemas/User"
+        "404":
           description: User not found
 
     delete:
@@ -226,9 +226,9 @@ paths:
           schema:
             type: integer
       responses:
-        '204':
+        "204":
           description: User deleted successfully
-        '404':
+        "404":
           description: User not found
 
 components:
@@ -257,7 +257,7 @@ components:
         relations:
           type: array
           items:
-            $ref: '#/components/schemas/TaskRelation'
+            $ref: "#/components/schemas/TaskRelation"
         createdAt:
           type: string
           format: date-time
@@ -291,7 +291,7 @@ components:
         relations:
           type: array
           items:
-            $ref: '#/components/schemas/TaskRelation'
+            $ref: "#/components/schemas/TaskRelation"
 
     TaskRelation:
       type: object

@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
+import { tryCatch } from "../lib/tryCatch";
 
 export const writeFile = tool({
   description: `Write content to a file. 
@@ -21,7 +22,7 @@ export const writeFile = tool({
       .describe("The target file path with name and extension."),
     content: z.string().describe("The content of the file"),
   }),
-  execute: async ({ comment, filename, content }) => {
+  execute: tryCatch(async ({ comment, filename, content }) => {
     let isUpdate = await exists(filename);
     if (isUpdate) {
       console.log(`Updating File "${filename}"`);
@@ -34,5 +35,5 @@ export const writeFile = tool({
     await fs.mkdir(folders, { recursive: true });
     await fs.writeFile(filename, content);
     return isUpdate ? "File updated" : "File created";
-  },
+  }),
 });

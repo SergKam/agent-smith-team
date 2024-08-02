@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
+import { tryCatch } from "../lib/tryCatch";
 
 export const renameFile = tool({
   description: `Rename or move th file to a new location.
@@ -19,7 +20,7 @@ export const renameFile = tool({
       .string()
       .describe("The new name and path of the file with extension."),
   }),
-  execute: async ({ comment, filename, renameTo }) => {
+  execute: tryCatch(async ({ comment, filename, renameTo }) => {
     console.log(`Renaming file: ${filename} to ${renameTo}`);
     console.log(comment);
 
@@ -31,5 +32,5 @@ export const renameFile = tool({
     await fs.mkdir(renameFolders, { recursive: true });
     await fs.rename(filename, renameTo);
     return "File renamed";
-  },
+  }),
 });

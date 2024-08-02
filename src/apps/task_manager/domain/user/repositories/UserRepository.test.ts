@@ -1,7 +1,7 @@
-import { UserRepository } from '../repositories/UserRepository';
-import { getConnection } from '../../../database/db';
+import { UserRepository } from "../repositories/UserRepository";
+import { getConnection } from "../../../database/db";
 
-jest.mock('../../../database/db');
+jest.mock("../../../database/db");
 
 const mockGetConnection = getConnection as jest.MockedFunction<
   typeof getConnection
@@ -20,10 +20,10 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('UserRepository', () => {
-  describe('createUser', () => {
-    it('should create a new user', async () => {
-      const user = { name: 'Test User' };
+describe("UserRepository", () => {
+  describe("createUser", () => {
+    it("should create a new user", async () => {
+      const user = { name: "Test User" };
 
       mockConnection.execute.mockResolvedValue([{ insertId: 1 }]);
 
@@ -31,15 +31,15 @@ describe('UserRepository', () => {
 
       expect(result).toBe(1);
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'INSERT INTO users (name) VALUES (?)',
-        [user.name],
+        "INSERT INTO users (name) VALUES (?)",
+        [user.name]
       );
     });
   });
 
-  describe('getUserById', () => {
-    it('should return a user by ID', async () => {
-      const user = { id: 1, name: 'Test User' };
+  describe("getUserById", () => {
+    it("should return a user by ID", async () => {
+      const user = { id: 1, name: "Test User" };
 
       mockConnection.execute.mockResolvedValue([[user]]);
 
@@ -47,29 +47,29 @@ describe('UserRepository', () => {
 
       expect(result).toEqual(user);
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'SELECT * FROM users WHERE id = ?',
-        [1],
+        "SELECT * FROM users WHERE id = ?",
+        [1]
       );
     });
 
-    it('should return null if user does not exist', async () => {
+    it("should return null if user does not exist", async () => {
       mockConnection.execute.mockResolvedValue([[]]);
 
       const result = await userRepository.getUserById(9999);
 
       expect(result).toBeNull();
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'SELECT * FROM users WHERE id = ?',
-        [9999],
+        "SELECT * FROM users WHERE id = ?",
+        [9999]
       );
     });
   });
 
-  describe('getAllUsers', () => {
-    it('should return all users', async () => {
+  describe("getAllUsers", () => {
+    it("should return all users", async () => {
       const users = [
-        { id: 1, name: 'User 1' },
-        { id: 2, name: 'User 2' },
+        { id: 1, name: "User 1" },
+        { id: 2, name: "User 2" },
       ];
 
       mockConnection.execute.mockResolvedValue([users]);
@@ -78,35 +78,35 @@ describe('UserRepository', () => {
 
       expect(result).toEqual(users);
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'SELECT * FROM users',
+        "SELECT * FROM users"
       );
     });
   });
 
-  describe('updateUserById', () => {
-    it('should update a user by ID', async () => {
-      const userData = { name: 'Updated User' };
+  describe("updateUserById", () => {
+    it("should update a user by ID", async () => {
+      const userData = { name: "Updated User" };
 
       mockConnection.execute.mockResolvedValue([{}]);
 
       await userRepository.updateUserById(1, userData);
 
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'UPDATE users SET name = ? WHERE id = ?',
-        [userData.name, 1],
+        "UPDATE users SET name = ? WHERE id = ?",
+        [userData.name, 1]
       );
     });
   });
 
-  describe('deleteUserById', () => {
-    it('should delete a user by ID', async () => {
+  describe("deleteUserById", () => {
+    it("should delete a user by ID", async () => {
       mockConnection.execute.mockResolvedValue([{}]);
 
       await userRepository.deleteUserById(1);
 
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        'DELETE FROM users WHERE id = ?',
-        [1],
+        "DELETE FROM users WHERE id = ?",
+        [1]
       );
     });
   });

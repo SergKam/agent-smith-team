@@ -2,6 +2,7 @@ import { exists } from "../lib/fileUtils";
 import fs from "fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
+import { tryCatch } from "../lib/tryCatch";
 
 export const patchFile = tool({
   description: `
@@ -28,7 +29,7 @@ export const patchFile = tool({
       .string()
       .describe("The new content that will replace the search part."),
   }),
-  execute: async ({ comment, filename, search, replace }) => {
+  execute: tryCatch(async ({ comment, filename, search, replace }) => {
     console.log(`Patching file: ${filename}`);
     console.log(comment);
 
@@ -44,5 +45,5 @@ export const patchFile = tool({
 
     await fs.writeFile(filename, newContent);
     return "File patched";
-  },
+  }),
 });

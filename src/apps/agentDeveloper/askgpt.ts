@@ -2,10 +2,10 @@ import path from "path";
 import "dotenv/config";
 
 import { concatenateFiles, exists } from "./lib/fileUtils";
-import { generateText } from 'ai';
+import { generateText } from "ai";
 import fs from "fs/promises";
-import { registry } from './lib/registry';
-import * as tools from './tools'
+import { registry } from "./lib/registry";
+import * as tools from "./tools";
 
 const main = async () => {
   const app = process.argv[2];
@@ -37,8 +37,8 @@ const main = async () => {
     Use async/await instead of promises or callbacks.     
     Include changes in all files that are needed to implement working solution.
     Create tests for all branches.
-    Do not change the existing tests.
     When you are done, run "npm test --selectProjects ${app}" to check if the code is working.
+    All Test MUST pass!
     If no errors are found, you can finish and answer with the short git commit message 
     with the summary of the changes made.
     `;
@@ -64,7 +64,6 @@ const main = async () => {
     This is the current package.json file: ${packageJson}
     `;
 
-
   const result = await generateText({
     model: registry.languageModel(process.env.AI_MODEL || "openai:gpt-4o"),
     seed: 927364,
@@ -72,13 +71,13 @@ const main = async () => {
     maxToolRoundtrips: 100,
     tools,
     system,
-    prompt
-  })
+    prompt,
+  });
 
-  console.dir("text", result.text)
-  console.log("finish", result.finishReason)
-  console.log("usage", result.usage)
-  console.log("roundtrips", result.roundtrips)
+  console.dir("text", result.text);
+  console.log("finish", result.finishReason);
+  console.log("usage", result.usage);
+  console.log("roundtrips", result.roundtrips);
 };
 
 main().catch(console.error);

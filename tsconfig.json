@@ -4,6 +4,6 @@
     "module": "commonjs",
     "rootDir": ".",
     "strict": true,
-    "esModuleInterop": true,
+    "esModuleInterop": true
   }
 }

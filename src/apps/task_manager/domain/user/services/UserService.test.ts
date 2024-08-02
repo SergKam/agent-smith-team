@@ -1,8 +1,8 @@
-import { UserService } from '../services/UserService';
-import { UserRepository } from '../repositories/UserRepository';
-import { User } from '../models/User';
+import { UserService } from "../services/UserService";
+import { UserRepository } from "../repositories/UserRepository";
+import { User } from "../models/User";
 
-jest.mock('../repositories/UserRepository');
+jest.mock("../repositories/UserRepository");
 
 const mockUserRepository = new UserRepository() as jest.Mocked<UserRepository>;
 const userService = new UserService(mockUserRepository);
@@ -11,10 +11,10 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('UserService', () => {
-  describe('createUser', () => {
-    it('should create a new user', async () => {
-      const user: Omit<User, 'id'> = { name: 'Test User' };
+describe("UserService", () => {
+  describe("createUser", () => {
+    it("should create a new user", async () => {
+      const user: Omit<User, "id"> = { name: "Test User" };
 
       mockUserRepository.createUser.mockResolvedValue(1);
 
@@ -25,9 +25,9 @@ describe('UserService', () => {
     });
   });
 
-  describe('getUserById', () => {
-    it('should return a user by ID', async () => {
-      const user: User = { id: 1, name: 'Test User' };
+  describe("getUserById", () => {
+    it("should return a user by ID", async () => {
+      const user: User = { id: 1, name: "Test User" };
 
       mockUserRepository.getUserById.mockResolvedValue(user);
 
@@ -37,7 +37,7 @@ describe('UserService', () => {
       expect(mockUserRepository.getUserById).toHaveBeenCalledWith(1);
     });
 
-    it('should return null if user does not exist', async () => {
+    it("should return null if user does not exist", async () => {
       mockUserRepository.getUserById.mockResolvedValue(null);
 
       const result = await userService.getUserById(9999);
@@ -47,11 +47,11 @@ describe('UserService', () => {
     });
   });
 
-  describe('getAllUsers', () => {
-    it('should return all users', async () => {
+  describe("getAllUsers", () => {
+    it("should return all users", async () => {
       const users: User[] = [
-        { id: 1, name: 'User 1' },
-        { id: 2, name: 'User 2' },
+        { id: 1, name: "User 1" },
+        { id: 2, name: "User 2" },
       ];
 
       mockUserRepository.getAllUsers.mockResolvedValue(users);
@@ -63,10 +63,10 @@ describe('UserService', () => {
     });
   });
 
-  describe('updateUserById', () => {
-    it('should update a user by ID', async () => {
-      const existingUser: User = { id: 1, name: 'Test User' };
-      const updatedUserData: Partial<User> = { name: 'Updated User' };
+  describe("updateUserById", () => {
+    it("should update a user by ID", async () => {
+      const existingUser: User = { id: 1, name: "Test User" };
+      const updatedUserData: Partial<User> = { name: "Updated User" };
       const updatedUser: User = { ...existingUser, ...updatedUserData };
 
       mockUserRepository.getUserById.mockResolvedValue(existingUser);
@@ -78,15 +78,15 @@ describe('UserService', () => {
       expect(mockUserRepository.getUserById).toHaveBeenCalledWith(1);
       expect(mockUserRepository.updateUserById).toHaveBeenCalledWith(
         1,
-        updatedUser,
+        updatedUser
       );
     });
 
-    it('should return null if user does not exist', async () => {
+    it("should return null if user does not exist", async () => {
       mockUserRepository.getUserById.mockResolvedValue(null);
 
       const result = await userService.updateUserById(9999, {
-        name: 'Updated User',
+        name: "Updated User",
       });
 
       expect(result).toBeNull();
@@ -94,9 +94,9 @@ describe('UserService', () => {
     });
   });
 
-  describe('deleteUserById', () => {
-    it('should delete a user by ID', async () => {
-      const existingUser: User = { id: 1, name: 'Test User' };
+  describe("deleteUserById", () => {
+    it("should delete a user by ID", async () => {
+      const existingUser: User = { id: 1, name: "Test User" };
 
       mockUserRepository.getUserById.mockResolvedValue(existingUser);
       mockUserRepository.deleteUserById.mockResolvedValue();
@@ -108,7 +108,7 @@ describe('UserService', () => {
       expect(mockUserRepository.deleteUserById).toHaveBeenCalledWith(1);
     });
 
-    it('should return false if user does not exist', async () => {
+    it("should return false if user does not exist", async () => {
       mockUserRepository.getUserById.mockResolvedValue(null);
 
       const result = await userService.deleteUserById(9999);

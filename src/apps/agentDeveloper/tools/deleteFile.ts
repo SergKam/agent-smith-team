@@ -2,6 +2,7 @@ import { exists } from "../lib/fileUtils";
 import fs from "fs/promises";
 import { tool } from "ai";
 import { z } from "zod";
+import { tryCatch } from "../lib/tryCatch";
 
 export const deleteFile = tool({
   description: "Delete a file",
@@ -13,7 +14,7 @@ export const deleteFile = tool({
       .string()
       .describe("The target file path with name and extension."),
   }),
-  execute: async ({ comment, filename }) => {
+  execute: tryCatch(async ({ comment, filename }) => {
     console.log(`Deleting file: ${filename}`);
     console.log(comment);
 
@@ -27,5 +28,5 @@ export const deleteFile = tool({
 
     await fs.unlink(filename);
     return "File deleted";
-  },
+  }),
 });

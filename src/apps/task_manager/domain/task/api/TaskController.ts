@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
-import { TaskService } from '../services/TaskService';
-import { TaskStatus } from '../models/TaskStatus';
-import { TaskType } from '../models/TaskType';
-import { TaskPriority } from '../models/TaskPriority';
-import { TaskRelationType } from '../models/TaskRelationType';
-import { UserNotFoundError } from '../../user/repositories/UserRepository';
+import { Request, Response } from "express";
+import { TaskService } from "../services/TaskService";
+import { TaskStatus } from "../models/TaskStatus";
+import { TaskType } from "../models/TaskType";
+import { TaskPriority } from "../models/TaskPriority";
+import { TaskRelationType } from "../models/TaskRelationType";
+import { UserNotFoundError } from "../../user/repositories/UserRepository";
 
 export default function () {
   return {
@@ -14,7 +14,7 @@ export default function () {
 
       const task = await taskService.getTaskById(taskId);
       if (!task) {
-        return res.status(404).send('Task not found');
+        return res.status(404).send("Task not found");
       }
 
       res.status(200).json(task);
@@ -34,11 +34,11 @@ export default function () {
             (relation: { relationType: TaskRelationType }) => ({
               ...relation,
               relationType: relation.relationType as TaskRelationType,
-            }),
+            })
           ),
         });
         if (!updatedTask) {
-          return res.status(404).send('Task not found');
+          return res.status(404).send("Task not found");
         }
 
         res.status(200).json(updatedTask);
@@ -56,7 +56,7 @@ export default function () {
 
       const deleted = await taskService.deleteTaskById(taskId);
       if (!deleted) {
-        return res.status(404).send('Task not found');
+        return res.status(404).send("Task not found");
       }
 
       res.status(204).send();

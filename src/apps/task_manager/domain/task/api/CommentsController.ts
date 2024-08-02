@@ -1,15 +1,15 @@
-import { Request, Response } from 'express';
-import { paths } from '../../../types/api-types';
-import { CommentService } from '../../task/services/CommentService';
+import { Request, Response } from "express";
+import { paths } from "../../../types/api-types";
+import { CommentService } from "../../task/services/CommentService";
 
 // Define types for request and response bodies
 
 type PostCommentRequest =
-  paths['/tasks/{taskId}/comments']['post']['requestBody']['content']['application/json'];
+  paths["/tasks/{taskId}/comments"]["post"]["requestBody"]["content"]["application/json"];
 type PostCommentResponse =
-  paths['/tasks/{taskId}/comments']['post']['responses']['201']['content']['application/json'];
+  paths["/tasks/{taskId}/comments"]["post"]["responses"]["201"]["content"]["application/json"];
 type GetCommentsResponse =
-  paths['/tasks/{taskId}/comments']['get']['responses']['200']['content']['application/json'];
+  paths["/tasks/{taskId}/comments"]["get"]["responses"]["200"]["content"]["application/json"];
 
 export default function () {
   return {
@@ -19,8 +19,8 @@ export default function () {
       const comments = await commentService.getCommentsByTaskId(taskId);
       const response: GetCommentsResponse = comments as GetCommentsResponse;
       res.header(
-        'Content-Range',
-        `comments 0-${comments.length}/${comments.length}`,
+        "Content-Range",
+        `comments 0-${comments.length}/${comments.length}`
       );
       res.status(200).json(response);
     },

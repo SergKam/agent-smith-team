@@ -1,30 +1,30 @@
-import { Request, Response } from 'express';
-import { paths } from '../../../types/api-types';
-import { TaskService } from '../services/TaskService';
-import { UserNotFoundError } from '../../user/repositories/UserRepository';
-import { TaskStatus } from '../models/TaskStatus';
-import { TaskType } from '../models/TaskType';
-import { TaskPriority } from '../models/TaskPriority';
-import { TaskRelationType } from '../models/TaskRelationType';
+import { Request, Response } from "express";
+import { paths } from "../../../types/api-types";
+import { TaskService } from "../services/TaskService";
+import { UserNotFoundError } from "../../user/repositories/UserRepository";
+import { TaskStatus } from "../models/TaskStatus";
+import { TaskType } from "../models/TaskType";
+import { TaskPriority } from "../models/TaskPriority";
+import { TaskRelationType } from "../models/TaskRelationType";
 
 // Define types for request and response bodies
 
 type PostTaskRequest =
-  paths['/tasks']['post']['requestBody']['content']['application/json'];
+  paths["/tasks"]["post"]["requestBody"]["content"]["application/json"];
 type PostTaskResponse =
-  paths['/tasks']['post']['responses']['201']['content']['application/json'];
+  paths["/tasks"]["post"]["responses"]["201"]["content"]["application/json"];
 type GetTasksResponse =
-  paths['/tasks']['get']['responses']['200']['content']['application/json'];
+  paths["/tasks"]["get"]["responses"]["200"]["content"]["application/json"];
 
 type GetTaskByIdResponse =
-  paths['/tasks/{taskId}']['get']['responses']['200']['content']['application/json'];
+  paths["/tasks/{taskId}"]["get"]["responses"]["200"]["content"]["application/json"];
 type PutTaskRequest =
-  paths['/tasks/{taskId}']['put']['requestBody']['content']['application/json'];
+  paths["/tasks/{taskId}"]["put"]["requestBody"]["content"]["application/json"];
 type PutTaskResponse =
-  paths['/tasks/{taskId}']['put']['responses']['200']['content']['application/json'];
+  paths["/tasks/{taskId}"]["put"]["responses"]["200"]["content"]["application/json"];
 
 type DeleteTaskResponse =
-  paths['/tasks/{taskId}']['delete']['responses']['204']['content'];
+  paths["/tasks/{taskId}"]["delete"]["responses"]["204"]["content"];
 
 export default function () {
   return {
@@ -58,7 +58,7 @@ export default function () {
 
       const tasks = await taskService.getAllTasks();
       const response: GetTasksResponse = tasks as GetTasksResponse;
-      res.header('Content-Range', `tasks 0-${tasks.length}/${tasks.length}`);
+      res.header("Content-Range", `tasks 0-${tasks.length}/${tasks.length}`);
       res.status(200).json(response);
     },
     getById: async (req: Request, res: Response) => {
@@ -67,7 +67,7 @@ export default function () {
 
       const task = await taskService.getTaskById(taskId);
       if (!task) {
-        return res.status(404).send('Task not found');
+        return res.status(404).send("Task not found");
       }
 
       const response: GetTaskByIdResponse = task as GetTaskByIdResponse;
@@ -90,7 +90,7 @@ export default function () {
           })),
         });
         if (!updatedTask) {
-          return res.status(404).send('Task not found');
+          return res.status(404).send("Task not found");
         }
 
         const response: PutTaskResponse = updatedTask as PutTaskResponse;
@@ -109,7 +109,7 @@ export default function () {
 
       const deleted = await taskService.deleteTaskById(taskId);
       if (!deleted) {
-        return res.status(404).send('Task not found');
+        return res.status(404).send("Task not found");
       }
 
       res.status(204).send();

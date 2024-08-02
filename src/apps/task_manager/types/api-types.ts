@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-  '/tasks': {
+  "/tasks": {
     parameters: {
       query?: never;
       header?: never;
@@ -12,17 +12,17 @@ export interface paths {
       cookie?: never;
     };
     /** List all tasks */
-    get: operations['getTasks'];
+    get: operations["getTasks"];
     put?: never;
     /** Create a new task */
-    post: operations['createTask'];
+    post: operations["createTask"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/tasks/{taskId}': {
+  "/tasks/{taskId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -30,18 +30,18 @@ export interface paths {
       cookie?: never;
     };
     /** Get a specific task */
-    get: operations['getTaskById'];
+    get: operations["getTaskById"];
     /** Update a specific task */
-    put: operations['updateTaskById'];
+    put: operations["updateTaskById"];
     post?: never;
     /** Delete a specific task */
-    delete: operations['deleteTaskById'];
+    delete: operations["deleteTaskById"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/tasks/{taskId}/comments': {
+  "/tasks/{taskId}/comments": {
     parameters: {
       query?: never;
       header?: never;
@@ -49,17 +49,17 @@ export interface paths {
       cookie?: never;
     };
     /** Get comments for a specific task */
-    get: operations['getCommentsByTaskId'];
+    get: operations["getCommentsByTaskId"];
     put?: never;
     /** Add a comment to a task */
-    post: operations['addCommentToTask'];
+    post: operations["addCommentToTask"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/users': {
+  "/users": {
     parameters: {
       query?: never;
       header?: never;
@@ -67,17 +67,17 @@ export interface paths {
       cookie?: never;
     };
     /** List all users */
-    get: operations['getUsers'];
+    get: operations["getUsers"];
     put?: never;
     /** Create a new user */
-    post: operations['createUser'];
+    post: operations["createUser"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  '/users/{userId}': {
+  "/users/{userId}": {
     parameters: {
       query?: never;
       header?: never;
@@ -85,12 +85,12 @@ export interface paths {
       cookie?: never;
     };
     /** Get a specific user */
-    get: operations['getUserById'];
+    get: operations["getUserById"];
     /** Update a specific user */
-    put: operations['updateUserById'];
+    put: operations["updateUserById"];
     post?: never;
     /** Delete a specific user */
-    delete: operations['deleteUserById'];
+    delete: operations["deleteUserById"];
     options?: never;
     head?: never;
     patch?: never;
@@ -105,14 +105,14 @@ export interface components {
       title?: string;
       description?: string;
       /** @enum {string} */
-      status?: 'pending' | 'in_progress' | 'completed';
+      status?: "pending" | "in_progress" | "completed";
       /** @enum {string} */
-      type?: 'story' | 'task' | 'question' | 'bug';
+      type?: "story" | "task" | "question" | "bug";
       /** @enum {string} */
-      priority?: 'low' | 'medium' | 'high' | 'critical';
+      priority?: "low" | "medium" | "high" | "critical";
       /** @description User ID of the assigned user */
       assignedTo?: number;
-      relations?: components['schemas']['TaskRelation'][];
+      relations?: components["schemas"]["TaskRelation"][];
       /** Format: date-time */
       createdAt?: string;
       /** Format: date-time */
@@ -125,18 +125,18 @@ export interface components {
        * @default pending
        * @enum {string}
        */
-      status: 'pending' | 'in_progress' | 'completed';
+      status: "pending" | "in_progress" | "completed";
       /** @enum {string} */
-      type: 'story' | 'task' | 'question' | 'bug';
+      type: "story" | "task" | "question" | "bug";
       /** @enum {string} */
-      priority: 'low' | 'medium' | 'high' | 'critical';
+      priority: "low" | "medium" | "high" | "critical";
       assignedTo?: number;
-      relations?: components['schemas']['TaskRelation'][];
+      relations?: components["schemas"]["TaskRelation"][];
     };
     TaskRelation: {
       relatedTaskId: number;
       /** @enum {string} */
-      relationType: 'child' | 'parent' | 'related' | 'blocked';
+      relationType: "child" | "parent" | "related" | "blocked";
     };
     Comment: {
       id?: number;
@@ -181,7 +181,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Task'][];
+          "application/json": components["schemas"]["Task"][];
         };
       };
     };
@@ -195,7 +195,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['TaskInput'];
+        "application/json": components["schemas"]["TaskInput"];
       };
     };
     responses: {
@@ -205,7 +205,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Task'];
+          "application/json": components["schemas"]["Task"];
         };
       };
     };
@@ -227,7 +227,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Task'];
+          "application/json": components["schemas"]["Task"];
         };
       };
       /** @description Task not found */
@@ -250,7 +250,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['TaskInput'];
+        "application/json": components["schemas"]["TaskInput"];
       };
     };
     responses: {
@@ -260,7 +260,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Task'];
+          "application/json": components["schemas"]["Task"];
         };
       };
       /** @description Task not found */
@@ -316,7 +316,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Comment'][];
+          "application/json": components["schemas"]["Comment"][];
         };
       };
     };
@@ -332,7 +332,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['CommentInput'];
+        "application/json": components["schemas"]["CommentInput"];
       };
     };
     responses: {
@@ -342,7 +342,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['Comment'];
+          "application/json": components["schemas"]["Comment"];
         };
       };
     };
@@ -362,7 +362,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['User'][];
+          "application/json": components["schemas"]["User"][];
         };
       };
     };
@@ -376,7 +376,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserInput'];
+        "application/json": components["schemas"]["UserInput"];
       };
     };
     responses: {
@@ -386,7 +386,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['User'];
+          "application/json": components["schemas"]["User"];
         };
       };
     };
@@ -408,7 +408,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['User'];
+          "application/json": components["schemas"]["User"];
         };
       };
       /** @description User not found */
@@ -431,7 +431,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        'application/json': components['schemas']['UserInput'];
+        "application/json": components["schemas"]["UserInput"];
       };
     };
     responses: {
@@ -441,7 +441,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          'application/json': components['schemas']['User'];
+          "application/json": components["schemas"]["User"];
         };
       };
       /** @description User not found */

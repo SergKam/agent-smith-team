@@ -1,7 +1,7 @@
-import { promisify } from 'util';
-import { exec } from 'child_process';
-import fs from 'fs/promises';
-import { glob } from 'glob';
+import { promisify } from "util";
+import { exec } from "child_process";
+import fs from "fs/promises";
+import { glob } from "glob";
 
 export const execAsync = promisify(exec);
 
@@ -26,23 +26,23 @@ export const exists = async (path: string) => {
 
 export const concatenateFiles = async (
   rootDir: string,
-  app: string,
+  app: string
 ): Promise<string> =>
   (
     await Promise.all(
       [
-        ...(await glob(rootDir + '/**/*', {
+        ...(await glob(rootDir + "/**/*", {
           ignore: [
-            'docker-compose.yml',
-            'src/shared/api.html',
-            'coverage/**',
-            'node_modules/**',
-            'data/**',
-            'src/apps/**',
-            'package-lock.json',
-            'concatenated.ts',
-            'LICENSE',
-            'README.md',
+            "docker-compose.yml",
+            "src/shared/api.html",
+            "coverage/**",
+            "node_modules/**",
+            "data/**",
+            "src/apps/**",
+            "package-lock.json",
+            "concatenated.ts",
+            "LICENSE",
+            "README.md",
           ],
           matchBase: true,
           nodir: true,
@@ -50,7 +50,7 @@ export const concatenateFiles = async (
           absolute: false,
         })),
         ...(await glob(`${rootDir}/src/apps/${app}/**`, {
-          ignore: ['**/*.ico'],
+          ignore: ["**/*.ico"],
           matchBase: true,
           nodir: true,
           realpath: true,
@@ -64,4 +64,4 @@ export const concatenateFiles = async (
       //     .then((content) => `// File: ${file}\n${content}\n`),
       // ),
     )
-  ).join('\n');
+  ).join("\n");
