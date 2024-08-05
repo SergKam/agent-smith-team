@@ -12,7 +12,7 @@ The main directories and files are structured as follows:
 
 - **src**: Root directory for the source code.
   - **apps**: Contains different applications within the project.
-    - **task_manager**: Main application for managing tasks.
+    - **taskManager**: Main application for managing tasks.
       - **api**: Contains API route handlers.
       - **database**: Database connection and schema initialization.
       - **middleware**: Express middleware functions.
@@ -48,6 +48,8 @@ The main directories and files are structured as follows:
   and presents of required parameters.
 - **openapi-typescript**: Tool to generate TypeScript types from OpenAPI specifications.
   The TypeScript types are generated from the OpenAPI specification and used throughout the application.
+- **winston**: Logger module based on winston (exported from `src/apps/taskManager/middleware/logger`)
+
 
 ## Common Patterns
 

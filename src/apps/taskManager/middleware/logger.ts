@@ -8,7 +8,7 @@ export type TsLogger = Logger & {
 };
 const wLogger = createLogger({
   level: logLevel,
-  defaultMeta: { service: "task-manager" },
+  defaultMeta: { service: "taskManager" },
   format: format.simple(),
   transports: [new transports.Console()],
 });

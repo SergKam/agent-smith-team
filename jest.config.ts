@@ -20,8 +20,8 @@ module.exports = {
       preset: "ts-jest",
     },
     {
-      displayName: "task_manager",
-      rootDir: "./src/apps/task_manager",
+      displayName: "taskManager",
+      rootDir: "./src/apps/taskManager",
       testEnvironment: "node",
       testMatch: ["<rootDir>/**/*.test.ts"],
       collectCoverageFrom: ["<rootDir>/**/*.ts"],
