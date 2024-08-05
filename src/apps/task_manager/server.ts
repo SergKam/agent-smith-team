@@ -15,7 +15,7 @@ import tasks from "./domain/task/api/TasksController";
 import taskId from "./domain/task/api/TaskController";
 import errorMiddleware from "./middleware/errorMiddleware";
 import taskIdComments from "./domain/task/api/CommentsController";
-
+import logger from "./middleware/logger";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -26,6 +26,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(logger.middleware);
 const apiDoc = yaml.load(
   fs.readFileSync(
     path.resolve(__dirname, "..", "..", "shared/api.yaml"),
@@ -54,13 +55,17 @@ initialize({
   promiseMode: true,
   pathsIgnore: new RegExp(".(spec|test)$"),
   operations,
-  errorMiddleware: errorMiddleware,
+  errorMiddleware,
+  validateApiDoc: true,
+  exposeApiDocs: true,
+  docsPath: "/api-docs",
+  logger,
 });
-console.log("Express-OpenAPI initialized");
 
+logger.info("Express-OpenAPI initialized");
 if (process.env.NODE_ENV !== "test") {
   app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    logger.info(`Server is running on port ${port}`);
   });
 }
 

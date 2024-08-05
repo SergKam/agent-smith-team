@@ -1,8 +1,9 @@
 import { ErrorRequestHandler } from "express";
 import { UserNotFoundError } from "../domain/user/repositories/UserRepository";
+import wLogger from "./logger";
 
 const errorMiddleware: ErrorRequestHandler = (err, req, res, next) => {
-  console.error(err);
+  wLogger.error(err.message, { stack: err.stack });
   if (err.status) {
     return res.status(err.status).json(err);
   }

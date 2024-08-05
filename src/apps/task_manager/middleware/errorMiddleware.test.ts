@@ -1,7 +1,6 @@
 import request from "supertest";
 import express from "express";
 import errorMiddleware from "./errorMiddleware";
-
 const app = express();
 
 app.get("/error", (req, res) => {

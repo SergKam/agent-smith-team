@@ -1,4 +1,4 @@
-import { TaskService } from "../services/TaskService";
+import { TaskService } from "./TaskService";
 import { TaskRepository } from "../repositories/TaskRepository";
 import { Task } from "../models/Task";
 import { TaskStatus } from "../models/TaskStatus";
