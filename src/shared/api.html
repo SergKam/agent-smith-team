@@ -27,23 +27,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <script>
       window.onload = function () {
-        fetch('/api.yaml')
+        fetch("/api.yaml")
           .then((response) => response.text())
           .then((yaml) => {
             const spec = jsyaml.load(yaml);
             const ui = SwaggerUIBundle({
               spec: spec,
-              dom_id: '#swagger-ui',
+              dom_id: "#swagger-ui",
               deepLinking: true,
               presets: [
                 SwaggerUIBundle.presets.apis,
                 SwaggerUIBundle.SwaggerUIStandalonePreset,
               ],
-              layout: 'BaseLayout',
+              layout: "BaseLayout",
             });
           })
           .catch((error) =>
-            console.error('Error loading API specification:', error),
+            console.error("Error loading API specification:", error)
           );
       };
     </script>
