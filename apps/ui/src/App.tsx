@@ -6,15 +6,18 @@ import {
   ShowGuesser,
 } from "react-admin";
 import { Layout } from "./Layout";
+import TaskList from "./TaskList";
 import { dataProvider } from "./dataProvider";
 import UserCreate from "./UserCreate";
 import UsersList from "./UsersList";
+import TaskCreate from "./TaskCreate";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
     <Resource
       name="tasks"
-      list={ListGuesser}
+      create={TaskCreate}
+      list={TaskList}
       edit={EditGuesser}
       show={ShowGuesser}
     />

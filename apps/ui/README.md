@@ -46,7 +46,14 @@ npm run test
 ```
 It runs both unit and end to end tests.
 
+### Task Creation
+
+The TaskList component displays a list of tasks with attributes such as ID, title, description, status, type, and priority.
+
+The TaskCreate component allows users to create new tasks with various attributes such as title, description, status, type, priority, and assigned user.
+
 ### Unit tests
+
 To run only unit tests, run:
 ```sh
 npm run test:unit
