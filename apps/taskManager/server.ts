@@ -29,7 +29,7 @@ app.use(express.json());
 app.use(logger.middleware);
 const apiDoc = yaml.load(
   fs.readFileSync(
-    path.resolve(__dirname, "..", "..", "shared/api.yaml"),
+    path.resolve(__dirname, "shared/api.yaml"),
     "utf8"
   )
 ) as OpenAPIV3.Document;

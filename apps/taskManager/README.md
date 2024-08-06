@@ -10,27 +10,24 @@ The project follows:
 
 The main directories and files are structured as follows:
 
-- **src**: Root directory for the source code.
-  - **apps**: Contains different applications within the project.
-    - **taskManager**: Main application for managing tasks.
-      - **api**: Contains API route handlers.
-      - **database**: Database connection and schema initialization.
-      - **middleware**: Express middleware functions.
-      - **domain**: Contains domain-specific logic and models.
-        - **user**: User domain.
-          - **models**: TypeScript interfaces and enums representing the user domain models.
-          - **repositories**: Data access layer for interacting with the user database.
-          - **services**: Business logic layer for user domain.
-          - **api/actions**: API route handlers for user domain.
-        - **task**: Task domain.
-          - **models**: TypeScript interfaces and enums representing the task domain models.
-          - **repositories**: Data access layer for interacting with the task database.
-          - **services**: Business logic layer for task domain.
-          - **api/actions**: API route handlers for task domain.
-      - **types**: Type definitions generated from the OpenAPI specification.
-      - **server.ts**: Entry point for the Task Manager application.
+  - **database**: Database connection and schema initialization.
+  - **middleware**: Express middleware functions.
+  - **domain**: Contains domain-specific logic and models.
+    - **user**: User domain.
+      - **models**: TypeScript interfaces and enums representing the user domain models.
+      - **repositories**: Data access layer for interacting with the user database.
+      - **services**: Business logic layer for user domain.
+      - **api/actions**: API route handlers for user domain.
+    - **task**: Task domain.
+      - **models**: TypeScript interfaces and enums representing the task domain models.
+      - **repositories**: Data access layer for interacting with the task database.
+      - **services**: Business logic layer for task domain.
+      - **api/actions**: API route handlers for task domain.
+  - **types**: Type definitions generated from the OpenAPI specification.
   - **shared**: Shared resources across different applications.
     - **api.yaml**: OpenAPI specification for the API.
+    
+  - **server.ts**: Entry point for the Task Manager application.
 
 ## Used Technologies
 

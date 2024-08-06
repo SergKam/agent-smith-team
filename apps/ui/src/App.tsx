@@ -7,6 +7,7 @@ import {
 } from "react-admin";
 import { Layout } from "./Layout";
 import { dataProvider } from "./dataProvider";
+import UserCreate from "./UserCreate";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
@@ -15,6 +16,7 @@ export const App = () => (
       list={ListGuesser}
       edit={EditGuesser}
       show={ShowGuesser}
+      create={UserCreate}
     />
     <Resource
       name="users"
