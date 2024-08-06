@@ -8,6 +8,7 @@ import { tryCatch } from "../lib/tryCatch";
 export const renameFile = tool({
   description: `Rename or move th file to a new location.
     Use this function with patchFile if needed instead of writeFile following by deleteFile.
+    When renaming or moving the file, update import statements in this file or in files that depend on it.
     `,
   parameters: z.object({
     comment: z
