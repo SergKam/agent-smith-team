@@ -85,7 +85,7 @@ const main = async () => {
   console.dir("text", result.text);
   console.log("finish", result.finishReason);
   console.log("usage", result.usage);
-  console.log("roundtrips", result.roundtrips);
+  console.dir("roundtrips", result.roundtrips);
 };
 
 main().catch(console.error);

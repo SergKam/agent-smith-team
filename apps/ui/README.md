@@ -37,6 +37,76 @@ The included data provider use [ra-data-simple-rest](https://github.com/marmelab
 
 You'll find an `.env` file at the project root that includes a `VITE_JSON_SERVER_URL` variable. Set it to the URL of your backend.
 
-## User Creation
+## Testing
 
-A new user can be created using the UserCreate form in the admin interface.
+Run the tests by running:
+
+```sh
+npm run test
+```
+It runs both unit and end to end tests.
+
+### Unit tests
+To run only unit tests, run:
+```sh
+npm run test:unit
+```
+
+Unit tests example for the component `UsersList`: 
+```tsx
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import { AdminContext, ResourceContextProvider } from "react-admin";
+import UsersList from "./UsersList";
+
+const mockDataProvider = {
+  getList: jest
+    .fn()
+    .mockResolvedValue({ data: [{ id: 1, name: "John Doe" }], total: 1 }),
+  getOne: jest.fn(),
+  getMany: jest.fn(),
+  getManyReference: jest.fn(),
+  update: jest.fn(),
+  updateMany: jest.fn(),
+  create: jest.fn(),
+  delete: jest.fn(),
+  deleteMany: jest.fn(),
+};
+
+test("renders UsersList component", async () => {
+  const res= render(
+    <AdminContext dataProvider={mockDataProvider}>
+      <ResourceContextProvider value="users">
+      <UsersList/>
+      </ResourceContextProvider>
+    </AdminContext>
+  );
+
+ expect(await screen.findByText("John Doe")).toBeInTheDocument();
+});
+```
+
+### End to end tests
+End to end tests use jest-puppeteer and run on a headless browser. 
+example: 
+```tsx
+const port = process.env.PORT;
+describe("App", () => {
+  beforeAll(async () => {
+    await page.goto(`http://localhost:${port}/`);
+  });
+
+  it("should be titled ui", async () => {
+    await expect(page.title()).resolves.toMatch("ui");
+  });
+});
+```
+To run the end to end tests, you need to run the application in development mode (if it's not already running):
+```
+npm run dev
+```
+
+and then run the tests:
+```sh
+npm run test:e2e
+```

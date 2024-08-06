@@ -23,5 +23,6 @@
   "include": [
     "src",
     "node_modules/jest-puppeteer/dist/index.d.ts"
-  ]
+  ],
+  "types": ["node", "jest", "@testing-library/jest-dom"]
 }

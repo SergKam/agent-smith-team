@@ -1,0 +1,348 @@
+openapi: 3.0.0
+info:
+  title: agent-smith-team
+  description: API for managing tasks with advanced features in a task management system
+  version: 1.1.0
+
+servers:
+  - url: https://api.enhancedtaskmanager.com/v1
+
+paths:
+  /tasks:
+    get:
+      operationId: getTasks
+      summary: List all tasks
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      operationId: createTask
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "201":
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{taskId}:
+    get:
+      operationId: getTaskById
+      summary: Get a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+
+    put:
+      operationId: updateTaskById
+      summary: Update a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskInput"
+      responses:
+        "200":
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+
+    delete:
+      operationId: deleteTaskById
+      summary: Delete a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Task deleted successfully
+        "404":
+          description: Task not found
+
+  /tasks/{taskId}/comments:
+    get:
+      operationId: getCommentsByTaskId
+      summary: Get comments for a specific task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comment"
+
+    post:
+      operationId: addCommentToTask
+      summary: Add a comment to a task
+      parameters:
+        - name: taskId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommentInput"
+      responses:
+        "201":
+          description: Comment added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+
+  /users:
+    get:
+      operationId: getUsers
+      summary: List all users
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      operationId: createUser
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "201":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{userId}:
+    get:
+      operationId: getUserById
+      summary: Get a specific user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+    put:
+      operationId: updateUserById
+      summary: Update a specific user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInput"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+
+    delete:
+      operationId: deleteUserById
+      summary: Delete a specific user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: User deleted successfully
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+        type:
+          type: string
+          enum: [story, task, question, bug]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: integer
+          description: User ID of the assigned user
+        relations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRelation"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TaskInput:
+      type: object
+      required:
+        - title
+        - type
+        - priority
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [pending, in_progress, completed]
+          default: pending
+        type:
+          type: string
+          enum: [story, task, question, bug]
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+        assignedTo:
+          type: integer
+        relations:
+          type: array
+          items:
+            $ref: "#/components/schemas/TaskRelation"
+
+    TaskRelation:
+      type: object
+      required:
+        - relatedTaskId
+        - relationType
+      properties:
+        relatedTaskId:
+          type: integer
+        relationType:
+          type: string
+          enum: [child, parent, related, blocked]
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        taskId:
+          type: integer
+        userId:
+          type: integer
+        content:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CommentInput:
+      type: object
+      required:
+        - content
+        - userId
+      properties:
+        content:
+          type: string
+        userId:
+          type: integer
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+
+    UserInput:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string

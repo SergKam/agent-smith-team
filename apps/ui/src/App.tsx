@@ -8,6 +8,7 @@ import {
 import { Layout } from "./Layout";
 import { dataProvider } from "./dataProvider";
 import UserCreate from "./UserCreate";
+import UsersList from "./UsersList";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
@@ -16,13 +17,13 @@ export const App = () => (
       list={ListGuesser}
       edit={EditGuesser}
       show={ShowGuesser}
-      create={UserCreate}
     />
     <Resource
       name="users"
-      list={ListGuesser}
+      list={UsersList}
       edit={EditGuesser}
       show={ShowGuesser}
+      create={UserCreate}
     />
   </Admin>
 );
