@@ -50,7 +50,7 @@ export const concatenateFiles = async (
           absolute: false,
         })),
         ...(await glob(`${rootDir}/src/apps/${app}/**`, {
-          ignore: ["**/*.ico"],
+          ignore: ["**/*.ico", "**/node_modules/**"],
           matchBase: true,
           nodir: true,
           realpath: true,

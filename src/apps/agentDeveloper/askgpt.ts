@@ -58,7 +58,9 @@ const main = async () => {
     Follow the readme. You would need to update this README.md file with the changes you made if needed.
     Do not change files outside of "src/apps/${app}" folder.
     This is the current list of files in the app that you can read or modify with functions:
+    \`\`\`
     ${fileContent}
+    \`\`\`
     Do not assume the content of the files, read the file you need for the context.
     You can run "npm" commands using "callNpm" tool function to build/test the code or add/remove packages.
     This is the current package.json file: ${packageJson}
