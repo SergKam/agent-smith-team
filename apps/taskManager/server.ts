@@ -11,8 +11,13 @@ import yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 import fs from "fs";
 import cors from "cors";
-import tasks from "./domain/task/api/TasksController";
-import taskId from "./domain/task/api/TaskController";
+
+import { createTask } from "./domain/task/api/actions/createTask";
+import { getAllTasks } from "./domain/task/api/actions/getAllTasks";
+import { getTaskById } from "./domain/task/api/actions/getTaskById";
+import { updateTaskById } from "./domain/task/api/actions/updateTaskById";
+import { deleteTaskById } from "./domain/task/api/actions/deleteTaskById";
+
 import errorMiddleware from "./middleware/errorMiddleware";
 import taskIdComments from "./domain/task/api/CommentsController";
 import logger from "./middleware/logger";
@@ -35,11 +40,11 @@ const apiDoc = yaml.load(
 ) as OpenAPIV3.Document;
 
 const operations = {
-  getTasks: tasks().get,
-  createTask: tasks().post,
-  getTaskById: taskId().get,
-  updateTaskById: taskId().put,
-  deleteTaskById: taskId().delete,
+  getTasks: getAllTasks,
+  createTask: createTask,
+  getTaskById: getTaskById,
+  updateTaskById: updateTaskById,
+  deleteTaskById: deleteTaskById,
   getCommentsByTaskId: taskIdComments().get,
   addCommentToTask: taskIdComments().post,
   getUsers: getAllUsers,

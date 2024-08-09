@@ -2,7 +2,7 @@
   "name": "agent-smith-team",
   "version": "1.0.0",
   "description": "AI agent development team",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "ts-node server.ts",
     "generate-types": "openapi-typescript src/shared/api.yaml --output src/apps/taskManager/types/api-types.ts",

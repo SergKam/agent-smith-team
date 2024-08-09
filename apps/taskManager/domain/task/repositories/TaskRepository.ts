@@ -51,6 +51,7 @@ export class TaskRepository {
         "SELECT * FROM tasks WHERE id = ?",
         [taskId]
       );
+
       const tasks = rows as Task[];
       return tasks.length > 0 ? tasks[0] : null;
     } finally {

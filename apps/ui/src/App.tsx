@@ -11,6 +11,7 @@ import UserCreate from "./UserCreate";
 import UsersList from "./UsersList";
 import TaskCreate from "./TaskCreate";
 import TaskEdit from "./TaskEdit";
+import TaskShow from "./TaskShow";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
@@ -19,7 +20,7 @@ export const App = () => (
       create={TaskCreate}
       list={TaskList}
       edit={TaskEdit}
-      show={ShowGuesser}
+      show={TaskShow}
     />
     <Resource
       name="users"
@@ -28,5 +29,6 @@ export const App = () => (
       show={ShowGuesser}
       create={UserCreate}
     />
+    <Resource name="comments" />
   </Admin>
 );

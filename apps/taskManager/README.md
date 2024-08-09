@@ -22,8 +22,9 @@ The main directories and files are structured as follows:
       - **models**: TypeScript interfaces and enums representing the task domain models.
       - **repositories**: Data access layer for interacting with the task database.
       - **services**: Business logic layer for task domain.
-      - **api/actions**: API route handlers for task domain.
-  - **types**: Type definitions generated from the OpenAPI specification.
+      - **api**: API-related files for task domain.
+        - **actions**: Individual API route handlers for task domain (e.g., createTask, getAllTasks, getTaskById, updateTaskById, deleteTaskById).
+         - **types**: Type definitions generated from the OpenAPI specification.
   - **shared**: Shared resources across different applications.
     - **api.yaml**: OpenAPI specification for the API.
     
