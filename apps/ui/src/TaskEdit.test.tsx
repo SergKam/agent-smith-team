@@ -18,7 +18,7 @@ const mockDataProvider = {
   update: jest
     .fn()
     .mockResolvedValue({ data: { id: 1, title: "Updated Task" } }),
-};
+} as any;
 
 test("renders TaskEdit component", async () => {
   render(

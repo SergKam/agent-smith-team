@@ -1,7 +1,7 @@
 import "dotenv/config";
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 const config = {
-  preset: 'jest-puppeteer',
+  preset: 'ts-jest',
   testMatch: ["<rootDir>/**/*.e2e.ts"],
   maxWorkers: 1,
 };

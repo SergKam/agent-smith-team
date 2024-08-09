@@ -2,6 +2,7 @@ data
 node_modules
 *.log
 .env
+.google-credentials.json
 *.js
 dist
 coverage

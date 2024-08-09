@@ -1,7 +1,6 @@
 import {
   Admin,
   Resource,
-  ListGuesser,
   EditGuesser,
   ShowGuesser,
 } from "react-admin";

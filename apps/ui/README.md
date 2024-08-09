@@ -155,15 +155,7 @@ const mockDataProvider = {
   getList: jest
     .fn()
     .mockResolvedValue({ data: [{ id: 1, name: "John Doe" }], total: 1 }),
-  getOne: jest.fn(),
-  getMany: jest.fn(),
-  getManyReference: jest.fn(),
-  update: jest.fn(),
-  updateMany: jest.fn(),
-  create: jest.fn(),
-  delete: jest.fn(),
-  deleteMany: jest.fn(),
-};
+} as any;
 
 test("renders UsersList component", async () => {
   const res= render(
@@ -181,17 +173,28 @@ test("renders UsersList component", async () => {
 ### End to end tests
 End to end tests use jest-puppeteer and run on a headless browser. 
 example: 
-```tsx
-const port = process.env.PORT;
+```ts
+import { Browser, launch, Page } from "puppeteer";
+
 describe("App", () => {
+  const port = process.env.PORT;
+  let page: Page;
+  let browser: Browser;
   beforeAll(async () => {
+    browser = await launch();
+    page = await browser.newPage();
     await page.goto(`http://localhost:${port}/`);
+  });
+
+  afterAll(async () => {
+    await browser.close();
   });
 
   it("should be titled ui", async () => {
     await expect(page.title()).resolves.toMatch("ui");
   });
 });
+
 ```
 To run the end to end tests, you need to run the application in development mode (if it's not already running):
 ```

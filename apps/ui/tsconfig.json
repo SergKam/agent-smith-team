@@ -21,8 +21,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src",
-    "node_modules/jest-puppeteer/dist/index.d.ts"
+    "src"
   ],
   "types": ["node", "jest", "@testing-library/jest-dom"]
 }
