@@ -131,11 +131,18 @@ npm run test
 ```
 It runs both unit and end to end tests.
 
-### Task Creation
+### Task Management
 
-The TaskList component displays a list of tasks with attributes such as ID, title, description, status, type, and priority.
+The TaskList component displays a list of tasks with attributes such as ID, title, description, status, type, priority, and assigned user. The assigned user is displayed using a ReferenceField, which shows the user's name.
 
-The TaskCreate component allows users to create new tasks with various attributes such as title, description, status, type, priority, and assigned user.
+The TaskCreate and TaskEdit components allow users to create and edit tasks with various attributes such as title, description, status, type, priority, and assigned user. The assigned user is selected using a ReferenceInput with a SelectInput, which allows users to choose from a list of existing users.
+
+These components use the following React Admin components:
+- ReferenceField: To display the assigned user's name in the TaskList
+- ReferenceInput: To provide a list of users to choose from when assigning a task
+- SelectInput: To allow selection of a user from the provided list
+
+This implementation ensures that tasks are always assigned to valid users and provides a user-friendly interface for managing task assignments.
 
 ### Unit tests
 

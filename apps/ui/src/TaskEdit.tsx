@@ -4,6 +4,7 @@ import {
   SimpleForm,
   TextInput,
   SelectInput,
+  ReferenceInput,
   required,
 } from "react-admin";
 import { RichTextInput } from "ra-input-rich-text";
@@ -39,12 +40,9 @@ const TaskEdit = () => (
           { id: "critical", name: "Critical" },
         ]}
       />
-      <TextInput
-        source="assignedTo"
-        label="Assigned To"
-        helperText="Enter the user assigned to this task"
-        validate={required()}
-      />
+      <ReferenceInput source="assignedTo" reference="users">
+        <SelectInput optionText="name" label="Assigned To" validate={required()} />
+      </ReferenceInput>
     </SimpleForm>
   </Edit>
 );
