@@ -26,5 +26,15 @@ export class CommentRepository {
     } finally {
       connection.release();
     }
+    }
+
+  async getAllComments(): Promise<Comment[]> {
+    const connection = await getConnection();
+    try {
+      const [rows] = await connection.execute("SELECT * FROM comments");
+      return rows as Comment[];
+    } finally {
+      connection.release();
+    }
   }
 }

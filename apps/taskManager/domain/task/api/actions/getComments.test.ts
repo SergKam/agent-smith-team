@@ -1,9 +1,9 @@
 import request from "supertest";
-import { cleanupDb, pool } from "../../../database/db";
-import { TaskStatus } from "../models/TaskStatus";
-import { TaskType } from "../models/TaskType";
-import { TaskPriority } from "../models/TaskPriority";
-import app from "../../../server";
+import { cleanupDb, pool } from "../../../../database/db";
+import { TaskStatus } from "../../models/TaskStatus";
+import { TaskType } from "../../models/TaskType";
+import { TaskPriority } from "../../models/TaskPriority";
+import app from "../../../../server";
 
 beforeAll(async () => {
   await cleanupDb();
@@ -13,7 +13,7 @@ afterAll(async () => {
   await cleanupDb();
 });
 
-describe("GET /tasks/:taskId/comments", () => {
+describe("GET /comments", () => {
   let taskId: number;
   let userId: number;
 
@@ -46,7 +46,7 @@ describe("GET /tasks/:taskId/comments", () => {
 
   it("should return comments for a specific task", async () => {
     const response = await request(app)
-      .get(`/v1/tasks/${taskId}/comments`)
+      .get(`/v1/comments?filter={"taskId":${taskId}}`)
       .expect(200);
 
     expect(response.body).toBeInstanceOf(Array);
@@ -61,7 +61,7 @@ describe("GET /tasks/:taskId/comments", () => {
     await pool.query("DELETE FROM comments");
 
     const response = await request(app)
-      .get(`/v1/tasks/${taskId}/comments`)
+      .get(`/v1/comments?filter={"taskId":${taskId}}`)
       .expect(200);
 
     expect(response.body).toBeInstanceOf(Array);

@@ -8,6 +8,10 @@ export class CommentService {
     this.commentRepository = commentRepository;
   }
 
+  async getAllComments(): Promise<Comment[]> {
+    return this.commentRepository.getAllComments();
+  }
+
   async addCommentToTask(
     taskId: number,
     commentData: CommentInput

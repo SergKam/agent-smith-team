@@ -19,7 +19,8 @@ import { updateTaskById } from "./domain/task/api/actions/updateTaskById";
 import { deleteTaskById } from "./domain/task/api/actions/deleteTaskById";
 
 import errorMiddleware from "./middleware/errorMiddleware";
-import taskIdComments from "./domain/task/api/CommentsController";
+import { getComments } from "./domain/task/api/actions/getComments";
+import { addComment } from "./domain/task/api/actions/addComment";
 import logger from "./middleware/logger";
 
 const app = express();
@@ -45,8 +46,8 @@ const operations = {
   getTaskById: getTaskById,
   updateTaskById: updateTaskById,
   deleteTaskById: deleteTaskById,
-  getCommentsByTaskId: taskIdComments().get,
-  addCommentToTask: taskIdComments().post,
+  getComments: getComments,
+  addComment: addComment,
   getUsers: getAllUsers,
   createUser: createUser,
   getUserById: getUserById,

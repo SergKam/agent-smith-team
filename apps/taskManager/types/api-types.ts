@@ -4,480 +4,479 @@
  */
 
 export interface paths {
-  "/tasks": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/tasks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all tasks */
+        get: operations["getTasks"];
+        put?: never;
+        /** Create a new task */
+        post: operations["createTask"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List all tasks */
-    get: operations["getTasks"];
-    put?: never;
-    /** Create a new task */
-    post: operations["createTask"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/tasks/{taskId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/tasks/{taskId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific task */
+        get: operations["getTaskById"];
+        /** Update a specific task */
+        put: operations["updateTaskById"];
+        post?: never;
+        /** Delete a specific task */
+        delete: operations["deleteTaskById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a specific task */
-    get: operations["getTaskById"];
-    /** Update a specific task */
-    put: operations["updateTaskById"];
-    post?: never;
-    /** Delete a specific task */
-    delete: operations["deleteTaskById"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/tasks/{taskId}/comments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/comments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get comments with optional filters */
+        get: operations["getComments"];
+        put?: never;
+        /** Add a comment */
+        post: operations["addComment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get comments for a specific task */
-    get: operations["getCommentsByTaskId"];
-    put?: never;
-    /** Add a comment to a task */
-    post: operations["addCommentToTask"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List all users */
+        get: operations["getUsers"];
+        put?: never;
+        /** Create a new user */
+        post: operations["createUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** List all users */
-    get: operations["getUsers"];
-    put?: never;
-    /** Create a new user */
-    post: operations["createUser"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/{userId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/users/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a specific user */
+        get: operations["getUserById"];
+        /** Update a specific user */
+        put: operations["updateUserById"];
+        post?: never;
+        /** Delete a specific user */
+        delete: operations["deleteUserById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /** Get a specific user */
-    get: operations["getUserById"];
-    /** Update a specific user */
-    put: operations["updateUserById"];
-    post?: never;
-    /** Delete a specific user */
-    delete: operations["deleteUserById"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    Task: {
-      id?: number;
-      title?: string;
-      description?: string;
-      /** @enum {string} */
-      status?: "pending" | "in_progress" | "completed";
-      /** @enum {string} */
-      type?: "story" | "task" | "question" | "bug";
-      /** @enum {string} */
-      priority?: "low" | "medium" | "high" | "critical";
-      /** @description User ID of the assigned user */
-      assignedTo?: number;
-      relations?: components["schemas"]["TaskRelation"][];
-      /** Format: date-time */
-      createdAt?: string;
-      /** Format: date-time */
-      updatedAt?: string;
+    schemas: {
+        Task: {
+            id?: number;
+            title?: string;
+            description?: string;
+            /** @enum {string} */
+            status?: "pending" | "in_progress" | "completed";
+            /** @enum {string} */
+            type?: "story" | "task" | "question" | "bug";
+            /** @enum {string} */
+            priority?: "low" | "medium" | "high" | "critical";
+            /** @description User ID of the assigned user */
+            assignedTo?: number;
+            relations?: components["schemas"]["TaskRelation"][];
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        TaskInput: {
+            title: string;
+            description?: string;
+            /**
+             * @default pending
+             * @enum {string}
+             */
+            status: "pending" | "in_progress" | "completed";
+            /** @enum {string} */
+            type: "story" | "task" | "question" | "bug";
+            /** @enum {string} */
+            priority: "low" | "medium" | "high" | "critical";
+            assignedTo?: number;
+            relations?: components["schemas"]["TaskRelation"][];
+        };
+        TaskRelation: {
+            relatedTaskId: number;
+            /** @enum {string} */
+            relationType: "child" | "parent" | "related" | "blocked";
+        };
+        Comment: {
+            id: number;
+            taskId: number;
+            userId: number;
+            content: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CommentInput: {
+            content: string;
+            userId: number;
+            taskId: number;
+        };
+        User: {
+            id?: number;
+            name?: string;
+        };
+        UserInput: {
+            name: string;
+        };
     };
-    TaskInput: {
-      title: string;
-      description?: string;
-      /**
-       * @default pending
-       * @enum {string}
-       */
-      status: "pending" | "in_progress" | "completed";
-      /** @enum {string} */
-      type: "story" | "task" | "question" | "bug";
-      /** @enum {string} */
-      priority: "low" | "medium" | "high" | "critical";
-      assignedTo?: number;
-      relations?: components["schemas"]["TaskRelation"][];
-    };
-    TaskRelation: {
-      relatedTaskId: number;
-      /** @enum {string} */
-      relationType: "child" | "parent" | "related" | "blocked";
-    };
-    Comment: {
-      id?: number;
-      taskId?: number;
-      userId?: number;
-      content?: string;
-      /** Format: date-time */
-      createdAt?: string;
-    };
-    CommentInput: {
-      content: string;
-      userId: number;
-    };
-    User: {
-      id?: number;
-      name?: string;
-    };
-    UserInput: {
-      name: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  getTasks: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    getTasks: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Task"][];
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Task"][];
+                };
+            };
         };
-      };
     };
-  };
-  createTask: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TaskInput"];
-      };
-    };
-    responses: {
-      /** @description Task created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    createTask: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Task"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskInput"];
+            };
         };
-      };
-    };
-  };
-  getTaskById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        taskId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Task created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Task"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["Task"];
-        };
-      };
-      /** @description Task not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  updateTaskById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        taskId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TaskInput"];
-      };
-    };
-    responses: {
-      /** @description Task updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    getTaskById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Task"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Task"];
+                };
+            };
+            /** @description Task not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
-      /** @description Task not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+    };
+    updateTaskById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: number;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-    };
-  };
-  deleteTaskById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        taskId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Task deleted successfully */
-      204: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TaskInput"];
+            };
         };
-        content?: never;
-      };
-      /** @description Task not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Task updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Task"];
+                };
+            };
+            /** @description Task not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-        content?: never;
-      };
     };
-  };
-  getCommentsByTaskId: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        taskId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    deleteTaskById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                taskId: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Comment"][];
+        requestBody?: never;
+        responses: {
+            /** @description Task deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Task not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  addCommentToTask: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        taskId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CommentInput"];
-      };
-    };
-    responses: {
-      /** @description Comment added successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    getComments: {
+        parameters: {
+            query?: {
+                filter?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["Comment"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"][];
+                };
+            };
         };
-      };
     };
-  };
-  getUsers: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    addComment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["User"][];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CommentInput"];
+            };
         };
-      };
-    };
-  };
-  createUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UserInput"];
-      };
-    };
-    responses: {
-      /** @description User created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description Comment added successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comment"];
+                };
+            };
         };
-        content: {
-          "application/json": components["schemas"]["User"];
-        };
-      };
     };
-  };
-  getUserById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: number;
-      };
-      cookie?: never;
+    getUsers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"][];
+                };
+            };
+        };
     };
-    requestBody?: never;
-    responses: {
-      /** @description Successful response */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    createUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["User"];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserInput"];
+            };
         };
-      };
-      /** @description User not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        responses: {
+            /** @description User created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
         };
-        content?: never;
-      };
     };
-  };
-  updateUserById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UserInput"];
-      };
-    };
-    responses: {
-      /** @description User updated successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
+    getUserById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+            };
+            cookie?: never;
         };
-        content: {
-          "application/json": components["schemas"]["User"];
+        requestBody?: never;
+        responses: {
+            /** @description Successful response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description User not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
-      /** @description User not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
     };
-  };
-  deleteUserById: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        userId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description User deleted successfully */
-      204: {
-        headers: {
-          [name: string]: unknown;
+    updateUserById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+            };
+            cookie?: never;
         };
-        content?: never;
-      };
-      /** @description User not found */
-      404: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserInput"];
+            };
         };
-        content?: never;
-      };
+        responses: {
+            /** @description User updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+            /** @description User not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
     };
-  };
+    deleteUserById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                userId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description User not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
 }

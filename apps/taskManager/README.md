@@ -81,7 +81,7 @@ The application is designed using domain-driven design (DDD) and clean architect
 - **Models**: Represent the domain entities and enums.
 - **Repositories**: Handle data access and database interactions.
 - **Services**: Contain business logic and interact with repositories.
-- **API Handlers**: Define the API routes and handle HTTP requests and responses.
+- **API Handlers**: Define the API routes and handle HTTP requests and responses. The comments API has been refactored to use individual actions for better modularity and maintainability. The endpoint for fetching comments has been updated to `/comments?filter={"taskId":123}`.
 - **Middleware**: Handle cross-cutting concerns like error handling.
 - **Database**: Initialize and manage database connections and schema.
 - **Types**: Generated TypeScript types from the OpenAPI specification.
