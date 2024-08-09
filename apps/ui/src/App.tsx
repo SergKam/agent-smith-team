@@ -11,6 +11,7 @@ import { dataProvider } from "./dataProvider";
 import UserCreate from "./UserCreate";
 import UsersList from "./UsersList";
 import TaskCreate from "./TaskCreate";
+import TaskEdit from "./TaskEdit";
 
 export const App = () => (
   <Admin layout={Layout} dataProvider={dataProvider}>
@@ -18,7 +19,7 @@ export const App = () => (
       name="tasks"
       create={TaskCreate}
       list={TaskList}
-      edit={EditGuesser}
+      edit={TaskEdit}
       show={ShowGuesser}
     />
     <Resource

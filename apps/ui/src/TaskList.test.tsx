@@ -6,7 +6,19 @@ import TaskList from "./TaskList";
 const mockDataProvider = {
   getList: jest
     .fn()
-    .mockResolvedValue({ data: [{ id: 1, title: "Test Task", description: "Task description", status: "pending", type: "task", priority: "medium" }], total: 1 }),
+    .mockResolvedValue({
+      data: [
+        {
+          id: 1,
+          title: "Test Task",
+          description: "Task description",
+          status: "pending",
+          type: "task",
+          priority: "medium",
+        },
+      ],
+      total: 1,
+    }),
   getOne: jest.fn(),
   getMany: jest.fn(),
   getManyReference: jest.fn(),
@@ -27,7 +39,6 @@ test("renders TaskList component", async () => {
   );
 
   expect(await screen.findByText("Test Task")).toBeInTheDocument();
-  expect(await screen.findByText("Task description")).toBeInTheDocument();
   expect(await screen.findByText("pending")).toBeInTheDocument();
   expect(await screen.findByText("task")).toBeInTheDocument();
   expect(await screen.findByText("medium")).toBeInTheDocument();

@@ -18,13 +18,13 @@ const mockDataProvider = {
 };
 
 test("renders UsersList component", async () => {
-  const res= render(
+  const res = render(
     <AdminContext dataProvider={mockDataProvider}>
       <ResourceContextProvider value="users">
-      <UsersList/>
+        <UsersList />
       </ResourceContextProvider>
     </AdminContext>
   );
 
- expect(await screen.findByText("John Doe")).toBeInTheDocument();
+  expect(await screen.findByText("John Doe")).toBeInTheDocument();
 });

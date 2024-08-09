@@ -30,6 +30,8 @@ describe("UserCreate", () => {
         </ResourceContextProvider>
       </AdminContext>
     );
-    expect(screen.getByRole("textbox",{name:"resources.users.fields.name"})).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: "resources.users.fields.name" })
+    ).toBeInTheDocument();
   });
 });
