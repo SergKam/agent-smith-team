@@ -137,7 +137,7 @@ The TaskList component displays a list of tasks with attributes such as ID, titl
 
 The TaskCreate and TaskEdit components allow users to create and edit tasks with various attributes such as title, description, status, type, priority, and assigned user. The assigned user is selected using a ReferenceInput with a SelectInput, which allows users to choose from a list of existing users.
 
-The TaskShow component displays detailed information about a specific task, including its comments. It includes a list of comments sorted from latest to oldest, and a form to add new comments. The comments are displayed using a ReferenceManyField, which shows the related comments for the current task.
+The TaskShow component displays detailed information about a specific task, including its comments. It includes a list of comments sorted from latest to oldest, and a form to add new comments. After a comment is successfully added, the input field is cleared. The comments are displayed using a ReferenceManyField, which shows the related comments for the current task.
 
 These components use the following React Admin components:
 - ReferenceField: To display the assigned user's name in the TaskList and TaskShow

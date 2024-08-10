@@ -98,16 +98,17 @@ paths:
         "404":
           description: Task not found
 
-  /tasks/{taskId}/comments:
+  /comments:
     get:
-      operationId: getCommentsByTaskId
-      summary: Get comments for a specific task
+      operationId: getComments
+      summary: Get comments with optional filters
       parameters:
-        - name: taskId
-          in: path
-          required: true
+        - name: filter
+          in: query
+          required: false
           schema:
-            type: integer
+            type: string
+            example: '{"taskId":123}'
       responses:
         "200":
           description: Successful response
@@ -119,14 +120,8 @@ paths:
                   $ref: "#/components/schemas/Comment"
 
     post:
-      operationId: addCommentToTask
-      summary: Add a comment to a task
-      parameters:
-        - name: taskId
-          in: path
-          required: true
-          schema:
-            type: integer
+      operationId: addComment
+      summary: Add a comment
       requestBody:
         required: true
         content:
@@ -307,6 +302,12 @@ components:
 
     Comment:
       type: object
+      required:
+        - id
+        - content
+        - userId
+        - taskId
+        - createdAt
       properties:
         id:
           type: integer
@@ -325,12 +326,14 @@ components:
       required:
         - content
         - userId
+        - taskId
       properties:
         content:
           type: string
         userId:
           type: integer
-
+        taskId:
+          type: integer
     User:
       type: object
       properties:

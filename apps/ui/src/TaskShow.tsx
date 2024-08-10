@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Show,
   SimpleShowLayout,
@@ -15,9 +15,9 @@ import {
   useNotify,
   useRefresh,
   Button,
-} from 'react-admin';
-import { useCreate } from 'react-admin';
-
+} from "react-admin";
+import { useCreate } from "react-admin";
+import { useForm } from 'react-hook-form';
 const TaskShow = () => (
   <Show>
     <SimpleShowLayout>
@@ -45,7 +45,7 @@ const CommentList = () => {
       <ReferenceManyField
         reference="comments"
         target="taskId"
-        sort={{ field: 'createdAt', order: 'DESC' }}
+        sort={{ field: "createdAt", order: "DESC" }}
       >
         <Datagrid bulkActionButtons={false}>
           <ReferenceField source="userId" reference="users">
@@ -65,24 +65,27 @@ const CreateComment = () => {
   const [create] = useCreate();
   const notify = useNotify();
   const refresh = useRefresh();
-
-  const handleSubmit = async (values) => {
+  const { reset } = useForm({
+    defaultValues: { content: '' }
+  });
+  const handleSubmit = async (values: any) => {
     try {
-      await create('comments', {
-        data: { ...values, taskId: record.id, userId: identity.id },
+      await create("comments", {
+        data: { ...values, taskId: record?.id, userId: identity?.id || 271 },
       });
-      notify('Comment added successfully');
+      notify("Comment added successfully");
       refresh();
+      reset();
+      return true;
     } catch (error) {
-      notify('Error: comment not added', { type: 'error' });
+      notify("Error: comment not added", { type: "error" });
     }
   };
 
   return (
     <Create resource="comments">
-      <SimpleForm onSubmit={handleSubmit}>
-        <TextInput source="content" fullWidth multiline />
-        <Button type="submit" label="Add Comment" />
+      <SimpleForm onSubmit={handleSubmit} >
+        <TextInput source="content" fullWidth multiline  />
       </SimpleForm>
     </Create>
   );
