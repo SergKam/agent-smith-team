@@ -23,6 +23,7 @@ logger.middleware = (req: Request, res: Response, next) => {
         Date.now() - start
       }ms ${res.get("Content-Length")}b`
     );
+    logger.debug(`Request body: ${JSON.stringify(req.body)}`);
   });
   next();
 };

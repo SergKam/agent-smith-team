@@ -6,8 +6,6 @@
   "scripts": {
     "start": "ts-node server.ts",
     "generate-types": "openapi-typescript shared/api.yaml --output types/api-types.ts",
-    "mysql": "docker run --rm -e MYSQL_ROOT_PASSWORD=localsecret  --mount type=bind,src=$(pwd)/data,dst=/var/lib/mysql  -p 3306:3306 mysql:5",
-    "ask": "CI=true ts-node src/apps/agentDeveloper/askgpt.ts",
     "test": "tsc && jest --no-color",
     "tsc": "tsc",
     "format": "prettier --write .",

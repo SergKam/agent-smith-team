@@ -1,20 +1,68 @@
-# Use root/example as user/password credentials
 version: "3"
 
 services:
-  db:
-    container_name: ast-mysql
-    image: mysql
+  taskManager:
+    container_name: ast-task-manager
+    image: node:18-alpine
+    working_dir: /app
+    command: npm run start
+    env_file: ./apps/taskManager/.env
     restart: always
     ports:
-      - "3306:3306"
-    environment:
-      MYSQL_USER: test
-      MYSQL_PASSWORD: test
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: ast_test_db
+      - "3000:3000"
+    depends_on:
+      - db
+    security_opt:
+      - seccomp:unconfined
     networks:
       - ast
+    volumes:
+      - ./apps/taskManager:/app:rw
+  ui:
+    container_name: ast-ui
+    image: node:18-alpine
+    working_dir: /app
+    command: npm run start
+    env_file: ./apps/ui/.env
+    restart: always
+    ports:
+      - "8888:8888"
+    depends_on:
+      - taskManager
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - ast
+    volumes:
+      - ./apps/ui:/app:rw
+
+  agent:
+    container_name: ast-agent
+    image: node:18-alpine
+    working_dir: /app
+    command: npm run start
+    env_file: ./apps/agentDeveloper/.env
+    restart: always
+    depends_on:
+      - taskManager
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - ast
+    volumes:
+      - ./apps/agentDeveloper:/app:rw
+  db:
+    container_name: ast-db
+    image: mysql:5
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: localsecret
+    volumes:
+        - ./data:/var/lib/mysql
+    ports:
+        - "3306:3306"
+    networks:
+        - ast
 
 networks:
   ast:

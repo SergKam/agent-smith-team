@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ask": "CI=true ts-node askgpt.ts",
+    "start": "ts-node client.ts",
     "test": "tsc && jest --no-color",
     "tsc": "tsc",
     "format": "prettier --write .",
@@ -18,6 +19,7 @@
     "@ai-sdk/openai": "^0.0.40",
     "@types/html-to-text": "^9.0.4",
     "ai": "^3.3.0",
+    "axios": "^1.7.4",
     "dotenv": "^16.4.5",
     "glob": "^10.4.5",
     "html-to-text": "^9.0.5",
