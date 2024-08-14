@@ -126,11 +126,11 @@ describe("TaskRepository", () => {
 
       mockConnection.execute.mockResolvedValue([tasks]);
 
-      const result = await taskRepository.getAllTasks();
+      const result = await taskRepository.getAllTasks({});
 
       expect(result).toEqual(tasks);
       expect(mockConnection.execute).toHaveBeenCalledWith(
-        "SELECT * FROM tasks"
+        "SELECT * FROM tasks ", []
       );
     });
   });

@@ -21,6 +21,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Task"
+      parameters:
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+          example: '{"status":"pending"}'
     post:
       operationId: createTask
       summary: Create a new task

@@ -59,10 +59,21 @@ export class TaskRepository {
     }
   }
 
-  async getAllTasks(): Promise<Task[]> {
+  async getAllTasks(filters: Partial<Task> = {}): Promise<Task[]> {
     const connection = await getConnection();
     try {
-      const [rows] = await connection.execute("SELECT * FROM tasks");
+      const conditions = [];
+      const values = [];
+
+      for (const [key, value] of Object.entries(filters)) {
+        conditions.push(`${key} = ?`);
+        values.push(value);
+      }
+
+      const whereClause = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
+      const query = `SELECT * FROM tasks ${whereClause}`;
+
+      const [rows] = await connection.execute(query, values);
       return rows as Task[];
     } finally {
       connection.release();

@@ -9,7 +9,7 @@ const TASK_MANAGER_API_URL = process.env.TASK_MANAGER_API_URL;
 if (!TASK_MANAGER_API_URL) {
   throw new Error("TASK_MANAGER_API_URL environment variable is required");
 }
-const agentId = parseInt(process.env.AGENT_ID||"", 10);
+const agentId = parseInt(process.env.AGENT_ID || "", 10);
 if (!agentId) {
   throw new Error("AGENT_ID environment variable is required");
 }
@@ -23,9 +23,8 @@ const client = axios.create({
 
 const fetchTask = async () => {
   try {
-    const response = await client.get(
-      `/tasks?status=pending&assignedTo=${agentId}`
-    );
+    const filter = JSON.stringify({ status: "pending", assignedTo: agentId });
+    const response = await client.get(`/tasks?filter=${filter}`);
     if (response.data && response.data.length > 0) {
       return response.data[0]; // Assuming the first task is the one to be processed
     }
@@ -66,7 +65,7 @@ const finishTask = async (task: any, stdout: string, stderr: string) => {
     });
 
     console.log("Task completed successfully");
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error finishing task:", error.message, error.response?.data);
   }
 };

@@ -56,8 +56,8 @@ export class TaskService {
     return this.taskRepository.getTaskById(taskId);
   }
 
-  async getAllTasks(): Promise<Task[]> {
-    return this.taskRepository.getAllTasks();
+  async getAllTasks(filters: Partial<Task> = {}): Promise<Task[]> {
+    return this.taskRepository.getAllTasks(filters);
   }
 
   async updateTaskById(
