@@ -38,9 +38,8 @@ services:
 
   agent:
     container_name: ast-agent
-    image: node:18-alpine
+    image: node:18
     working_dir: /app
-    command: npm run start
     env_file: ./apps/agentDeveloper/.env
     restart: always
     depends_on:
@@ -51,6 +50,17 @@ services:
       - ast
     volumes:
       - ./apps/agentDeveloper:/app:rw
+      - ~/.ssh:/tmp/ssh:ro
+      - /etc/ssh/ssh_config:/etc/ssh/ssh_config:ro  # Optional: Mount SSH config
+    command: >
+      /bin/sh -c "
+        cp -r /tmp/ssh /root/.ssh &&
+        chown -R root:root /root/.ssh &&
+        chmod 600 /root/.ssh/id_rsa &&
+        chmod 644 /root/.ssh/config &&
+        chmod 644 /root/.ssh/id_rsa.pub &&
+        npm run start
+      "
   db:
     container_name: ast-db
     image: mysql:5
