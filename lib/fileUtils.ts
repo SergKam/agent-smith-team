@@ -24,16 +24,16 @@ export const exists = async (path: string) => {
   }
 };
 
-export const listFiles = async (): Promise<string> =>
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
+export const listFiles = async (
+  pattern: string,
+  ignore: string[]
+): Promise<string> =>
   (
-    await glob(`./**`, {
-      ignore: [
-        "node_modules/**",
-        "coverage/**",
-        "dist/**",
-        "build/**",
-        "data/**",
-      ],
+    await glob(pattern, {
+      ignore,
       matchBase: true,
       nodir: true,
       realpath: true,

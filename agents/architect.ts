@@ -1,26 +1,18 @@
 import "dotenv/config";
-import { listFiles, exists } from "../lib/fileUtils";
-import { generateText } from "ai";
-import fs from "fs/promises";
-import { registry } from "../lib/registry";
-import * as tools from "../tools";
-import { exec } from "child_process";
-import util from "util";
-import { taskManager } from "../lib/taskManager";
-import { Issue } from "../lib/github/ghTypes";
+import { Agent, startAgent } from "../lib/agent";
+import { project } from "../lib/project";
 
-const execPromise = util.promisify(exec);
 
-const workOnTask = async (issue: Issue) => {
-  const app = issue.repository_url;
-  const prompt = `
-  issue number: #${issue.number}
-  title:${issue.title}
-  description: ${issue.body}
-  comment: ${issue.comment_bodies.join("\n\ncomment:\n")}
-  `;
-
-  const setupPrompt = `
+const agent: Agent = {
+  name: "architect",
+  taskLabel: "ready-for-architect",
+  doneLabel: "architect-done",
+  tools: ["readWeb", "addComment", "readFile", "createTask"],
+  model: "anthropic:claude-3-5-sonnet-20240620",
+  readFiles: ["README.md", "package.json"],
+  listFilesGlob: project.config.include.join(","),
+  listFilesIgnore: project.config.exclude,
+  rolePrompt: `
 # Role and Objective
 You are a professional software architect.
 Your primary goal is to provide guidance and direction to the development team.
@@ -71,106 +63,13 @@ Only create subtasks and assign them to other agents.
 
 # Output
 Do not chit-chat with the user. Use dry technical tone.
-`;
-
-  const fileContent = await listFiles();
-
-  const readmeFile = "README.md";
-  const readme =
-    (await exists(readmeFile)) && (await fs.readFile(readmeFile, "utf8"));
-
-  const packageJson =
-    (await exists("package.json")) &&
-    (await fs.readFile("package.json", "utf8"));
-
-  const system = `
-${setupPrompt}
-You are working on the app: ${app}
-This is the app's ${readmeFile}: 
-<file>
-${readme}
-</file>
-Follow the README.md.
-This is the current list of files in the app that you can read or modify with functions:
-<file>
-${fileContent}
-</file>
-Do not assume the content of the files; read the files you need for context.
-This is the current package.json file:
-<file>
-${packageJson}
-</file>
-`;
-
-  console.log(system);
-  const result = await generateText({
-    model: registry.languageModel(process.env.AI_MODEL || "openai:gpt-4o"),
-    seed: 927364,
-    temperature: 0,
-    maxToolRoundtrips: 100,
-    tools,
-    system,
-    prompt,
-  });
-
-  console.dir("text", result.text);
-  console.log("finish", result.finishReason);
-  console.log("usage", result.usage);
-  console.dir(result.roundtrips, { depth: null });
-  return result;
+`,
+  beforeWork: async (agent, issue) => {
+    await project.clone(agent.name);
+  },
+  afterWork: async (agent, issue) => {
+    await project.cleanup(agent.name);
+  },
 };
 
-const runTask = async (issue: any) => {
-  try {
-    // Remove directory
-    await execPromise(`rm -rf workspace`);
-    // Clone the repository
-    const repo = issue.repository_url.replace(
-      "https://api.github.com/repos/",
-      ""
-    );
-    await execPromise(`git clone git@github.com:${repo}.git workspace`);
-
-    // Navigate to the 'workspace' directory
-    process.chdir("workspace");
-
-    // Create a new branch with the issue number
-    const safeTitle = issue.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]/gi, "-")
-      .substring(0, 50);
-    const branch = `issue-${issue.number}-${safeTitle}`;
-    await execPromise(`git checkout -b ${branch}`);
-
-    const result = await workOnTask(issue);
-
-    // Return to the original directory
-    process.chdir("..");
-
-    return { stdout: JSON.stringify(result.roundtrips, null, 4), stderr: "" };
-  } catch (error) {
-    console.error("Error running task:", error);
-    return { stdout: "", stderr: `${error}` };
-  }
-};
-
-const main = async () => {
-  while (true) {
-    const issue = await taskManager.waitForTask("ready-for-architect");
-    const { stdout, stderr } = await runTask(issue);
-
-    await taskManager.addComment(
-      issue.number + "",
-      `--logs--
-      Task ${stderr.trim() ? "failed" : "completed"}.
-      <details><summary>Details</summary>
-      <p>
-      Output:\n\`\`\`\n${stdout}\n\`\`\`\n\nError:\n\`\`\`\n${stderr}\n\`\`\`
-      </p>
-      </details>`
-    );
-    await taskManager.setLabels(issue, ["architect-done"]);
-  }
-};
-
-main().catch(console.error);
+startAgent(agent).catch(console.error);

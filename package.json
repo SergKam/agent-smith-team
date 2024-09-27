@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "ask": "CI=true ts-node askgpt.ts",
-    "start:pm": "ts-node agents/pm.ts",
+    "start:po": "ts-node agents/productOwner.ts",
     "start:architect": "ts-node agents/architect.ts",
     "start:dev": "ts-node agents/dev.ts",
     "test": "tsc && jest --no-color",
@@ -17,10 +17,10 @@
   "author": "Sergii Kamenskyi",
   "license": "ISC",
   "dependencies": {
-    "@ai-sdk/anthropic": "^0.0.35",
-    "@ai-sdk/openai": "^0.0.40",
+    "@ai-sdk/anthropic": "^0.0.50",
+    "@ai-sdk/openai": "^0.0.62",
     "@types/html-to-text": "^9.0.4",
-    "ai": "^3.3.0",
+    "ai": "^3.4.4",
     "axios": "^1.7.4",
     "dotenv": "^16.4.5",
     "glob": "^10.4.5",

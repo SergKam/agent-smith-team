@@ -5,14 +5,13 @@ import { config } from "./config";
 // GitHub API client
 
 export const createTaskManager = (config: {
-  repoOwner: string;
   repoName: string;
   humanUser: string;
   robotUser: string;
   githubToken: string;
 }) => {
   const client = axios.create({
-    baseURL: `https://api.github.com/repos/${config.repoOwner}/${config.repoName}`,
+    baseURL: `https://api.github.com/repos/${config.repoName}`,
     headers: {
       Authorization: `Bearer ${config.githubToken}`,
       Accept: "application/vnd.github+json",
@@ -24,29 +23,22 @@ export const createTaskManager = (config: {
     body: string,
     labels: string[] = []
   ) => {
-    try {
-      const response = await client.post<Issue>("/issues", {
-        title,
-        body,
-        labels,
-      });
-      return response.data;
-    } catch (error: any) {
-      console.error(`Error creating task: ${error}`);
-    }
+    const response = await client.post<Issue>("/issues", {
+      title,
+      body,
+      labels,
+    });
+    return response.data;
   };
+
   const addComment = async (issueNumber: string, comment: string) => {
-    try {
-      const response = await client.post<{ id: number }>(
-        `/issues/${issueNumber}/comments`,
-        {
-          body: comment,
-        }
-      );
-      return response.data;
-    } catch (error: any) {
-      console.error(`Error adding comment to issue #${issueNumber}: ${error}`);
-    }
+    const response = await client.post<{ id: number }>(
+      `/issues/${issueNumber}/comments`,
+      {
+        body: comment,
+      }
+    );
+    return response.data;
   };
 
   const fetchTask = async (label: string) => {
@@ -71,8 +63,8 @@ export const createTaskManager = (config: {
       const comments = await client.get(`/issues/${issue.number}/comments`);
 
       issue.comment_bodies = comments.data
-        .map((comment: any) => `\nUser ${comment.user.login}:${comment.body}`)
-        .filter((comment: any) => !comment.startsWith("--logs--"));
+        .filter((comment: any) => !comment.body.startsWith("--logs--"))
+        .map((comment: any) => `\nUser ${comment.user.login}:${comment.body}`);
 
       return issue;
     } catch (error: any) {
@@ -81,68 +73,45 @@ export const createTaskManager = (config: {
     }
   };
 
-  const createPullRequest = async (issue: Issue) => {
-    try {
-      await client.post(`/pulls`, {
-        title: `Issue #${issue.number}: ${issue.title}`,
-        head: `issue-${issue.number}`,
-        body: `This PR was created automatically to address issue #${issue.number}.
-        ** ${issue.title} **`,
-        base: "main",
-      });
-      await client.post(`/issues/${issue.number}/labels`, {
-        labels: ["code review"],
-      });
-      console.log("PR created successfully");
-    } catch (error: any) {
-      console.error(`Error creating PR for issue #${issue.number}: ${error}`);
-    }
+  const createPullRequest = async (
+    issue: Issue,
+    branch: string,
+    text: string
+  ) => {
+    await client.post(`/pulls`, {
+      title: `Issue #${issue.number}: ${issue.title}`,
+      head: branch,
+      body: `This PR was created automatically to address issue #${issue.number}.
+        ** ${issue.title} **
+        Agent: ${text}
+        `,
+      base: "main",
+    });
+
+    await client.post(`/issues/${issue.number}/labels`, {
+      labels: ["ready-for-review"],
+    });
+
+    console.log("PR created successfully");
   };
 
   const setLabels = async (issue: Issue, labels: string[]) => {
-    try {
-      await client.put(`/issues/${issue.number}/labels`, {
-        labels: labels,
-      });
-      console.log(`Labels set for issue #${issue.number}: ${labels}`);
-    } catch (error: any) {
-      console.error(
-        `Error setting labels for issue #${issue.number}: ${error}`
-      );
-    }
+    await client.put(`/issues/${issue.number}/labels`, {
+      labels: labels,
+    });
+    console.log(`Labels set for issue #${issue.number}: ${labels}`);
   };
 
   const reassignTask = async (issue: Issue) => {
-    try {
       await client.patch(`/issues/${issue.number}`, {
         assignees: [config.humanUser],
       });
       console.log(`Reassigned issue #${issue.number} to ${config.humanUser}`);
-    } catch (error: any) {
-      console.error(
-        `Error reassigning task for issue #${issue.number}: ${error}`
-      );
-    }
-  };
-
-  // Wait for a task with the given label to be assigned to the robot user
-  const waitForTask = (label: string): Promise<Issue> => {
-    return new Promise((resolve) => {
-      setTimeout(async () => {
-        const issue = await fetchTask(label);
-        if (issue) {
-          resolve(issue);
-        } else {
-          resolve(await waitForTask(label));
-        }
-      }, 10000);
-    });
   };
 
   return {
     createTask,
     fetchTask,
-    waitForTask,
     addComment,
     reassignTask,
     createPullRequest,
@@ -152,8 +121,7 @@ export const createTaskManager = (config: {
 
 export const taskManager = createTaskManager({
   githubToken: config("GITHUB_TOKEN"),
-  repoOwner: config("REPO_OWNER"),
-  repoName: config("REPO_NAME"),
+  repoName: config("TASK_MANAGER_NAME"),
   robotUser: config("ROBOT_USER"),
   humanUser: config("HUMAN_USER"),
 });

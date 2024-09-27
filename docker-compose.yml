@@ -1,78 +1,78 @@
 version: "3"
 
 services:
-  taskManager:
-    container_name: ast-task-manager
-    image: node:18-alpine
+  po-agent:
+    build: .
+    init: true
     working_dir: /app
-    command: npm run start
-    env_file: ./apps/taskManager/.env
+    env_file: ./.env
     restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - db
     security_opt:
       - seccomp:unconfined
     networks:
       - ast
     volumes:
-      - ./apps/taskManager:/app:rw
-  ui:
-    container_name: ast-ui
-    image: node:18-alpine
-    working_dir: /app
-    command: npm run start
-    env_file: ./apps/ui/.env
-    restart: always
-    ports:
-      - "8888:8888"
-    depends_on:
-      - taskManager
-    security_opt:
-      - seccomp:unconfined
-    networks:
-      - ast
-    volumes:
-      - ./apps/ui:/app:rw
-
-  agent:
-    container_name: ast-agent
-    image: node:18
-    working_dir: /app
-    env_file: ./apps/agentDeveloper/.env
-    restart: always
-    depends_on:
-      - taskManager
-    security_opt:
-      - seccomp:unconfined
-    networks:
-      - ast
-    volumes:
-      - ./apps/agentDeveloper:/app:rw
+      - ./:/app:rw
       - ~/.ssh:/tmp/ssh:ro
-      - /etc/ssh/ssh_config:/etc/ssh/ssh_config:ro  # Optional: Mount SSH config
+      - /etc/ssh/ssh_config:/etc/ssh/ssh_config:ro # Optional: Mount SSH config
     command: >
       /bin/sh -c "
-        cp -r /tmp/ssh /root/.ssh &&
-        chown -R root:root /root/.ssh &&
-        chmod 600 /root/.ssh/id_rsa &&
-        chmod 644 /root/.ssh/config &&
-        chmod 644 /root/.ssh/id_rsa.pub &&
-        npm run start
+        cp -r /tmp/ssh ~/.ssh &&
+        chown -R node:node ~/.ssh &&
+        chmod 600 ~/.ssh/id_ed25519 &&
+        chmod 644 ~/.ssh/config &&
+        chmod 644 ~/.ssh/id_ed25519.pub &&
+        npx puppeteer browsers install chrome &&
+        npm run start:po
       "
-  db:
-    container_name: ast-db
-    image: mysql:5
+  architect-agent:
+    build: .
+    init: true
+    working_dir: /app
+    env_file: ./.env
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: localsecret
-    volumes:
-        - ./data:/var/lib/mysql
-    ports:
-        - "3306:3306"
+    security_opt:
+      - seccomp:unconfined
     networks:
-        - ast
+      - ast
+    volumes:
+      - ./:/app:rw
+      - ~/.ssh:/tmp/ssh:ro
+      - /etc/ssh/ssh_config:/etc/ssh/ssh_config:ro # Optional: Mount SSH config
+    command: >
+      /bin/sh -c "
+        cp -r /tmp/ssh ~/.ssh &&
+        chown -R node:node ~/.ssh &&        
+        chmod 600 ~/.ssh/id_ed25519 &&
+        chmod 644 ~/.ssh/config &&
+        chmod 644 ~/.ssh/id_ed25519.pub &&
+        npx puppeteer browsers install chrome &&
+        npm run start:architect
+      "
+  dev-agent:
+    build: .
+    init: true
+    working_dir: /app
+    env_file: ./.env
+    restart: always
+    security_opt:
+      - seccomp:unconfined
+    networks:
+      - ast
+    volumes:
+      - ./:/app:rw
+      - ~/.ssh:/tmp/ssh:ro
+      - /etc/ssh/ssh_config:/etc/ssh/ssh_config:ro # Optional: Mount SSH config
+    command: >
+      /bin/sh -c "
+        cp -r /tmp/ssh ~/.ssh &&
+        chown -R node:node ~/.ssh &&        
+        chmod 600 ~/.ssh/id_ed25519 &&
+        chmod 644 ~/.ssh/config &&
+        chmod 644 ~/.ssh/id_ed25519.pub &&
+        npx puppeteer browsers install chrome &&
+        npm run start:dev
+      "
 
 networks:
   ast:
