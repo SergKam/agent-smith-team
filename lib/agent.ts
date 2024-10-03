@@ -45,20 +45,20 @@ const workOnTask = async (agent: Agent, issue: Issue) => {
   const filesContent = !agent.readFiles
     ? ""
     : (
-        await Promise.all(
-          agent.readFiles.map(async (filename: string) => {
-            return {
-              file: filename,
-              content:
-                (await exists(filename)) &&
-                (await fs.readFile(filename, "utf8")),
-            };
-          })
-        )
+      await Promise.all(
+        agent.readFiles.map(async (filename: string) => {
+          return {
+            file: filename,
+            content:
+              (await exists(filename)) &&
+              (await fs.readFile(filename, "utf8")),
+          };
+        })
       )
-        .filter((file) => file.content)
-        .map(({ file, content }) => `<file src="${file}">\n${content}\n</file>`)
-        .join("\n");
+    )
+      .filter((file) => file.content)
+      .map(({ file, content }) => `<file src="${file}">\n${content}\n</file>`)
+      .join("\n");
 
   const system = `
 ${setupPrompt}
@@ -77,8 +77,8 @@ ${filesContent}
   const agentTools = !agent.tools
     ? tools
     : Object.fromEntries(
-        Object.entries(tools).filter(([key]) => agent.tools?.includes(key))
-      );
+      Object.entries(tools).filter(([key]) => agent.tools?.includes(key))
+    );
 
   console.log(system);
   console.log(prompt);
